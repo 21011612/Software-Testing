@@ -1,0 +1,58 @@
+@model DangKyViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card auth-card-wide">
+        <h1><i class="bi bi-person-plus text-muted me-1"></i> Đăng ký</h1>
+        <form asp-action="DangKy" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="HoTen" class="form-label fw-semibold"></label>
+                    <input asp-for="HoTen" class="form-control" />
+                    <span asp-validation-for="HoTen" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="SDT" class="form-label fw-semibold"></label>
+                    <input asp-for="SDT" class="form-control" />
+                    <span asp-validation-for="SDT" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label fw-semibold"></label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="DiaChi" class="form-label fw-semibold"></label>
+                    <input asp-for="DiaChi" class="form-control" />
+                </div>
+                <div class="col-12"><hr class="my-1" /><small class="text-muted">Tài khoản đăng nhập</small></div>
+                <div class="col-12">
+                    <label asp-for="TenDangNhap" class="form-label fw-semibold"></label>
+                    <input asp-for="TenDangNhap" class="form-control" />
+                    <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="MatKhau" class="form-label fw-semibold"></label>
+                    <input asp-for="MatKhau" class="form-control" />
+                    <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="XacNhanMatKhau" class="form-label fw-semibold"></label>
+                    <input asp-for="XacNhanMatKhau" class="form-control" />
+                    <span asp-validation-for="XacNhanMatKhau" class="text-danger small"></span>
+                </div>
+            </div>
+            <p class="small text-muted mt-3 mb-0">Sau khi tạo tài khoản, bạn sẽ được chuyển sang trang <strong>đăng nhập</strong> (không tự đăng nhập).</p>
+            <button type="submit" class="btn btn-tooru w-100 btn-lg mt-3">Tạo tài khoản</button>
+            <p class="text-center small mt-3 mb-0">
+                Đã có tài khoản? <a asp-action="DangNhap" class="fw-semibold">Đăng nhập</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

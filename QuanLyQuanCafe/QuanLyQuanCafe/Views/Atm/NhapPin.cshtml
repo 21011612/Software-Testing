@@ -1,0 +1,29 @@
+@model NhapPinViewModel
+@{
+    ViewData["Title"] = "Nhập mã PIN";
+}
+<div class="container container-main py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold mb-1">Yêu cầu mã PIN</h1>
+                    <p class="text-muted small mb-4">Thẻ: <span class="font-monospace">@Model.SoThe</span> (PIN demo: <code>1234</code> / <code>0000</code>)</p>
+                    <form asp-action="NhapPin" method="post">
+                        <input type="hidden" asp-for="SoThe" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                        <div class="mb-3">
+                            <label asp-for="MaPin" class="form-label fw-semibold"></label>
+                            <input asp-for="MaPin" class="form-control form-control-lg" inputmode="numeric" maxlength="6" />
+                            <span asp-validation-for="MaPin" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Xác nhận PIN</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

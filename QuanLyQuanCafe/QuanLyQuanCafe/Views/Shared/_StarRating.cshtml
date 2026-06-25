@@ -1,0 +1,15 @@
+@model StarRatingViewModel
+@{
+    var size = string.IsNullOrEmpty(Model.SizeClass) ? "" : Model.SizeClass;
+}
+<div class="star-rating-wrap @size">
+    @Html.Raw(StarRatingHelper.RenderStars(Model.Diem, size))
+    @if (Model.SoLuot > 0)
+    {
+        <span class="star-rating-meta">@Model.Diem.ToString("0.0") · @Model.SoLuot đánh giá</span>
+    }
+    else
+    {
+        <span class="star-rating-meta star-rating-meta--empty">Chưa có đánh giá</span>
+    }
+</div>

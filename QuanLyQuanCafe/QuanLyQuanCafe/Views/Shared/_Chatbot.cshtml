@@ -1,0 +1,31 @@
+@await Component.InvokeAsync("ChatbotTuVan")
+
+<div class="chatbot-root" id="tooruChatbot" aria-live="polite">
+    <div class="chatbot-panel" id="chatbotPanel" hidden>
+        <div class="chatbot-header">
+            <div>
+                <strong><i class="bi bi-cup-hot-fill me-1"></i> Trợ lý Tooru</strong>
+                <div class="small opacity-75">Tư vấn thực đơn &amp; đặt món</div>
+            </div>
+            <button type="button" class="btn btn-sm btn-link text-white p-0" id="chatbotClose" aria-label="Đóng">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages"></div>
+        <div class="chatbot-quick" id="chatbotQuick">
+            <button type="button" data-q="quán có món gì">Thực đơn</button>
+            <button type="button" data-q="giá cà phê">Giá cà phê</button>
+            <button type="button" data-q="khuyến mãi">Khuyến mãi</button>
+            <button type="button" data-q="cách đặt món">Đặt món</button>
+            <button type="button" data-q="địa chỉ quán">Địa chỉ</button>
+            <button type="button" data-q="giờ mở cửa">Giờ mở cửa</button>
+        </div>
+        <form class="chatbot-input" id="chatbotForm">
+            <input type="text" id="chatbotInput" placeholder="Nhập câu hỏi..." autocomplete="off" maxlength="300" />
+            <button type="submit" class="btn btn-tooru btn-sm"><i class="bi bi-send-fill"></i></button>
+        </form>
+    </div>
+    <button type="button" class="chatbot-fab" id="chatbotFab" aria-label="Mở trợ lý chat">
+        <i class="bi bi-chat-heart-fill" id="chatbotFabIcon"></i>
+    </button>
+</div>

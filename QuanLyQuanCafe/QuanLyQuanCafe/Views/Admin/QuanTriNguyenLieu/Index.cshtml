@@ -1,0 +1,26 @@
+@model IEnumerable<NguyenLieu>
+@{ ViewData["Title"] = "Nguyên liệu"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Nguyên liệu</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm NL</a>
+</div>
+<div class="admin-table-wrap">
+    <table class="table admin-table mb-0">
+        <thead><tr><th>Tên</th><th>ĐVT</th><th>Tồn</th><th>NCC</th><th class="text-end"></th></tr></thead>
+        <tbody>
+            @foreach (var n in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@n.TenNL</td>
+                    <td>@n.DonViTinh</td>
+                    <td>@n.SoLuongTon.ToString("N2")</td>
+                    <td>@(n.NhaCungCap?.TenNCC ?? "—")</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Sua" asp-route-id="@n.MaNL" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Xoa" asp-route-id="@n.MaNL" method="post" class="d-inline" onsubmit="return confirm('Xóa @n.TenNL?');">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

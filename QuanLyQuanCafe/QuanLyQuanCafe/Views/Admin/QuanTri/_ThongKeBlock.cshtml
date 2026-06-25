@@ -1,0 +1,93 @@
+@model ThongKeViewModel
+@{
+    var tk = Model.TongKet;
+    string Fmt(decimal v) => v.ToString("N0") + " đ";
+}
+
+<div class="p-3 pt-4">
+<div class="admin-section-head mb-3">
+    <h2 class="admin-section-title"><i class="bi bi-bar-chart-line me-2"></i>Thống kê doanh thu</h2>
+    <form method="get" asp-controller="QuanTri" asp-action="Index" class="admin-filter-form d-flex flex-wrap align-items-end gap-2">
+        <div>
+            <label class="form-label small mb-1">Từ ngày</label>
+            <input type="date" name="tuNgay" class="form-control form-control-sm" value="@Model.TuNgay.ToString("yyyy-MM-dd")" />
+        </div>
+        <div>
+            <label class="form-label small mb-1">Đến ngày</label>
+            <input type="date" name="denNgay" class="form-control form-control-sm" value="@Model.DenNgay.ToString("yyyy-MM-dd")" />
+        </div>
+        <button type="submit" class="btn btn-sm btn-admin-primary">Lọc</button>
+        <a asp-controller="QuanTri" asp-action="Index" asp-route-tuNgay="@DateTime.Today.AddDays(-6).ToString("yyyy-MM-dd")" asp-route-denNgay="@DateTime.Today.ToString("yyyy-MM-dd")" class="btn btn-sm btn-outline-secondary">7 ngày</a>
+        <a asp-controller="QuanTri" asp-action="Index" asp-route-tuNgay="@DateTime.Today.AddDays(-29).ToString("yyyy-MM-dd")" asp-route-denNgay="@DateTime.Today.ToString("yyyy-MM-dd")" class="btn btn-sm btn-outline-secondary">30 ngày</a>
+    </form>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Tổng đơn (kỳ)</div>
+            <div class="stat-value">@(tk?.TongSoDon ?? 0)</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card stat-card-gold">
+            <div class="stat-label">Doanh thu thực (kỳ)</div>
+            <div class="stat-value fs-5">@Fmt(tk?.TongDoanhThuThuc ?? 0)</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Doanh thu gốc (kỳ)</div>
+            <div class="stat-value fs-5">@Fmt(tk?.TongDoanhThuGoc ?? 0)</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Tổng giảm giá (kỳ)</div>
+            <div class="stat-value fs-5 text-danger">@Fmt(tk?.TongGiamGia ?? 0)</div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ThongKeCharts" model="Model" />
+
+@if (Model.TheoNgay.Count > 0)
+{
+    <div class="admin-table-wrap mb-4">
+        <div class="p-3 border-bottom">
+            <h3 class="h6 mb-0 fw-bold text-secondary text-uppercase">Chi tiết theo ngày</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Số đơn</th>
+                        <th>Doanh thu gốc</th>
+                        <th>Giảm giá</th>
+                        <th>Thực thu</th>
+                        <th>TB/đơn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.TheoNgay)
+                    {
+                        <tr>
+                            <td>@row.Ngay.ToString("dd/MM/yyyy")</td>
+                            <td>@row.SoDon</td>
+                            <td class="price-tag">@Fmt(row.DoanhThuGoc)</td>
+                            <td class="text-danger">@Fmt(row.TongGiam)</td>
+                            <td class="price-tag fw-bold">@Fmt(row.DoanhThuThuc)</td>
+                            <td>@Fmt(row.TrungBinhDon)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary mb-0">Không có dữ liệu trong khoảng @Model.TuNgay.ToString("dd/MM/yyyy") – @Model.DenNgay.ToString("dd/MM/yyyy"). Thử mở rộng ngày (ví dụ 01/06/2026 – 30/06/2026).</div>
+}
+</div>

@@ -1,0 +1,112 @@
+@startuml UC02_DangNhap_CongKhachHang
+' ============================================================
+' USE CASE DIAGRAM - UC02: Đăng nhập cổng khách hàng
+' Hệ thống: Quản lý Quán Cà Phê (Tooru Coffee)
+' ============================================================
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor<<primary>> #E3F2FD
+    BorderColor<<primary>> #1565C0
+    BackgroundColor<<include>> #FFF8E1
+    BorderColor<<include>> #F9A825
+    BackgroundColor<<secondary>> #E8F5E9
+    BorderColor<<secondary>> #2E7D32
+    ArrowColor #37474F
+    ActorBorderColor #1565C0
+    ActorBackgroundColor #BBDEFB
+}
+
+' ===================== ACTOR =====================
+actor "Thành viên\n(Khách hàng)" as KH
+
+' ===================== SYSTEM BOUNDARY =====================
+rectangle "Hệ thống Quản lý Quán Cà Phê\nCổng Khách hàng" {
+
+    usecase "UC02\nĐăng nhập cổng khách hàng" as UC02 <<primary>>
+
+    usecase "Xác thực thông tin\nđăng nhập" as Auth <<include>>
+
+    usecase "Đăng ký tài khoản\n(Khách hàng)" as Register <<secondary>>
+
+    usecase "Đăng xuất" as Logout <<secondary>>
+}
+
+' ===================== RELATIONSHIPS =====================
+KH --> UC02 : "thực hiện"
+KH --> Register
+
+' Include: Bắt buộc phải xác thực khi đăng nhập
+UC02 ..> Auth : <<include>>
+
+' Extend: Đăng xuất chỉ xảy ra sau khi đã đăng nhập thành công
+UC02 ..> Logout : <<extend>>
+
+' ===================== NOTES & SPECIFICATION =====================
+
+note right of UC02
+  **Mã Use Case:** UC02
+  **Tên:** Đăng nhập cổng khách hàng
+
+  **Tác nhân:** Thành viên (KhachHang)
+
+  **Mô tả:**
+  Nếu muốn sử dụng những tính năng đặc thù của hệ thống,
+  phải thực hiện thao tác đăng nhập vào hệ thống thành công.
+  Lưu ý rằng đối với tài khoản của nhân viên, thì sẽ do
+  người quản trị viên thêm vào chứ không thể đăng ký như người dùng.
+end note
+
+note left of UC02
+  **Điều kiện tiên quyết (Precondition):**
+  Phải đăng ký thành công tài khoản trên hệ thống.
+end note
+
+note bottom of UC02
+  **Điều kiện hậu quả (Postcondition):**
+  Người dùng được xác thực thành công
+  và chuyển hướng đến trang chủ khách hàng (cổng khách).
+end note
+
+note right of Auth
+  **Luồng chính (Main Flow):**
+  1. Người dùng truy cập trang Đăng nhập cổng khách hàng.
+  2. Nhập Tên đăng nhập / SĐT / Email và Mật khẩu.
+  3. Nhấn nút “Đăng nhập”.
+  4. Hệ thống kiểm tra thông tin đăng nhập.
+  5. Hệ thống xác thực thành công và cấp session.
+  6. Chuyển hướng đến trang chủ khách hàng.
+end note
+
+note left of Auth
+  **Luồng ngoại lệ (Exception Flows):**
+  • Sai tên đăng nhập hoặc mật khẩu
+    → Hiển thị lỗi “Tên đăng nhập hoặc mật khẩu không đúng”.
+
+  • Tài khoản bị khóa hoặc chưa kích hoạt
+    → Hiển thị thông báo tương ứng.
+
+  • Lỗi hệ thống
+    → Hiển thị lỗi chung.
+end note
+
+note left of Register
+  **Liên quan (Precondition):**
+  Use Case Đăng ký (UC01) phải được thực hiện
+  trước khi có thể đăng nhập.
+end note
+
+' ===================== TITLE & LEGEND =====================
+title UC02 - Đăng nhập cổng khách hàng\n(Use Case Diagram)
+
+legend right
+  |= Màu |= Ý nghĩa |
+  | <back:#E3F2FD>    </back> | Use Case chính (Primary) |
+  | <back:#FFF8E1>    </back> | Use Case include |
+  | <back:#E8F5E9>    </back> | Use Case liên quan |
+  | ..> <<include>> | Bước bắt buộc |
+  | ..> <<extend>>  | Mở rộng (tùy chọn) |
+endlegend
+
+@enduml

@@ -1,0 +1,33 @@
+@model TaiKhoanAdminViewModel
+@{ var isEdit = Model.MaTK > 0; var vaiTros = new[] { "Admin", "NhanVien", "KhachHang" }; }
+<form asp-action="@(isEdit ? "Sua" : "Them")" method="post" id="tkForm">
+    @Html.AntiForgeryToken()
+    @if (isEdit) { <input type="hidden" asp-for="MaTK" /> }
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="TenDangNhap" class="form-label"></label><input asp-for="TenDangNhap" class="form-control" /><span asp-validation-for="TenDangNhap" class="text-danger small"></span></div>
+        <div class="col-md-6"><label asp-for="MatKhauMoi" class="form-label"></label><input asp-for="MatKhauMoi" class="form-control" type="password" autocomplete="new-password" /><span class="text-muted small">@(isEdit ? "Để trống nếu không đổi" : "Bắt buộc")</span></div>
+        <div class="col-md-4"><label asp-for="VaiTro" class="form-label"></label><select asp-for="VaiTro" class="form-select" id="vaiTroSelect">@foreach (var v in vaiTros) { <option value="@v">@v</option> }</select></div>
+        <div class="col-md-4" id="nvBox"><label asp-for="MaNV" class="form-label"></label><select asp-for="MaNV" class="form-select" asp-items="ViewBag.NhanViens"><option value="">—</option></select></div>
+        <div class="col-md-4" id="khBox"><label asp-for="MaKH" class="form-label"></label><select asp-for="MaKH" class="form-select" asp-items="ViewBag.KhachHangs"><option value="">—</option></select></div>
+        <div class="col-12"><div class="form-check"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div></div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-admin-primary">Lưu</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+    </div>
+</form>
+<script>
+(function(){
+    const sel = document.getElementById('vaiTroSelect');
+    const nv = document.getElementById('nvBox');
+    const kh = document.getElementById('khBox');
+    function sync(){
+        const v = sel.value;
+        nv.style.display = v === 'NhanVien' ? '' : 'none';
+        kh.style.display = v === 'KhachHang' ? '' : 'none';
+    }
+    sel?.addEventListener('change', sync);
+    sync();
+})();
+</script>

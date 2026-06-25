@@ -1,0 +1,16 @@
+@model NhaCungCapAdminViewModel
+@{ var isEdit = Model.MaNCC > 0; }
+<form asp-action="@(isEdit ? "Sua" : "Them")" method="post">
+    @Html.AntiForgeryToken()
+    @if (isEdit) { <input type="hidden" asp-for="MaNCC" /> }
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="TenNCC" class="form-label"></label><input asp-for="TenNCC" class="form-control" /><span asp-validation-for="TenNCC" class="text-danger small"></span></div>
+        <div class="col-md-3"><label asp-for="SDT" class="form-label"></label><input asp-for="SDT" class="form-control" /></div>
+        <div class="col-md-3"><label asp-for="NguoiLienHe" class="form-label"></label><input asp-for="NguoiLienHe" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /></div>
+        <div class="col-md-6"><div class="form-check mt-4"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div></div>
+        <div class="col-12"><label asp-for="DiaChi" class="form-label"></label><input asp-for="DiaChi" class="form-control" /></div>
+    </div>
+    <div class="mt-4 d-flex gap-2"><button type="submit" class="btn btn-admin-primary">Lưu</button><a asp-action="Index" class="btn btn-outline-secondary">Hủy</a></div>
+</form>

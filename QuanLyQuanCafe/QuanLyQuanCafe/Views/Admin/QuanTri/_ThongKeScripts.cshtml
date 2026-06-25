@@ -1,0 +1,182 @@
+@model ThongKeViewModel
+@using System.Text.Json
+@{
+    var labelsNgay = Model.TheoNgay.Select(x => x.Ngay.ToString("dd/MM")).ToList();
+    var doanhThuThuc = Model.TheoNgay.Select(x => (double)x.DoanhThuThuc).ToList();
+    var soDon = Model.TheoNgay.Select(x => x.SoDon).ToList();
+    var giamGia = Model.TheoNgay.Select(x => (double)x.TongGiam).ToList();
+    var topLabels = Model.TopSanPham.Select(x => x.TenSP).ToList();
+    var topValues = Model.TopSanPham.Select(x => (double)x.DoanhThu).ToList();
+    var loaiDonLabels = Model.TheoLoaiDon.Select(x => x.Nhan).ToList();
+    var loaiDonValues = Model.TheoLoaiDon.Select(x => (double)x.GiaTri).ToList();
+    var ptLabels = Model.TheoPhuongThuc.Select(x => x.Nhan).ToList();
+    var ptValues = Model.TheoPhuongThuc.Select(x => (double)x.GiaTri).ToList();
+    var loaiSpLabels = Model.TheoLoaiSanPham.Select(x => x.Nhan).ToList();
+    var loaiSpValues = Model.TheoLoaiSanPham.Select(x => (double)x.GiaTri).ToList();
+    var palette = new[] { "#c17d52", "#5c4639", "#1f140f", "#8b664e", "#d4a88a", "#3a2820", "#a67c52", "#e09a72" };
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    (function () {
+        var palette = @Html.Raw(JsonSerializer.Serialize(palette));
+        var fmtVnd = function (v) {
+            if (v >= 1e6) return (v / 1e6).toFixed(1) + ' tr';
+            if (v >= 1e3) return Math.round(v / 1e3) + 'k';
+            return v;
+        };
+        var defaults = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { font: { family: 'system-ui' }, boxWidth: 12 } }
+            }
+        };
+
+        var elDt = document.getElementById('chartDoanhThu');
+        if (elDt) {
+            new Chart(elDt, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(JsonSerializer.Serialize(labelsNgay)),
+                    datasets: [
+                        {
+                            label: 'Doanh thu thực',
+                            data: @Html.Raw(JsonSerializer.Serialize(doanhThuThuc)),
+                            borderColor: '#c17d52',
+                            backgroundColor: 'rgba(193, 125, 82, 0.15)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 2.5,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#1f140f'
+                        },
+                        {
+                            label: 'Giảm giá',
+                            data: @Html.Raw(JsonSerializer.Serialize(giamGia)),
+                            borderColor: '#b85c5c',
+                            backgroundColor: 'transparent',
+                            borderDash: [6, 4],
+                            tension: 0.35,
+                            borderWidth: 2,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: Object.assign({}, defaults, {
+                    scales: {
+                        y: {
+                            ticks: { callback: function (v) { return fmtVnd(v) + ' đ'; } },
+                            grid: { color: 'rgba(31,20,15,0.07)' }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    return ctx.dataset.label + ': ' + Number(ctx.raw).toLocaleString('vi-VN') + ' đ';
+                                }
+                            }
+                        }
+                    }
+                })
+            });
+        }
+
+        var elDon = document.getElementById('chartSoDon');
+        if (elDon) {
+            new Chart(elDon, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonSerializer.Serialize(labelsNgay)),
+                    datasets: [{
+                        label: 'Số đơn',
+                        data: @Html.Raw(JsonSerializer.Serialize(soDon)),
+                        backgroundColor: 'rgba(111, 78, 55, 0.75)',
+                        borderRadius: 6
+                    }]
+                },
+                options: Object.assign({}, defaults, {
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        x: { grid: { display: false } }
+                    }
+                })
+            });
+        }
+
+        function doughnut(id, labels, values) {
+            var el = document.getElementById(id);
+            if (!el || !labels.length) return;
+            new Chart(el, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: palette.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: Object.assign({}, defaults, {
+                    cutout: '58%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    return ctx.label + ': ' + Number(ctx.raw).toLocaleString('vi-VN') + ' đ';
+                                }
+                            }
+                        }
+                    }
+                })
+            });
+        }
+
+        var elTop = document.getElementById('chartTopSp');
+        if (elTop && @topLabels.Count > 0) {
+            new Chart(elTop, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(JsonSerializer.Serialize(topLabels)),
+                    datasets: [{
+                        label: 'Doanh thu',
+                        data: @Html.Raw(JsonSerializer.Serialize(topValues)),
+                        backgroundColor: palette,
+                        borderRadius: 4
+                    }]
+                },
+                options: Object.assign({}, defaults, {
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { callback: function (v) { return fmtVnd(v); } } }
+                    }
+                })
+            });
+        }
+
+        doughnut('chartLoaiDon', @Html.Raw(JsonSerializer.Serialize(loaiDonLabels)), @Html.Raw(JsonSerializer.Serialize(loaiDonValues)));
+        doughnut('chartPhuongThuc', @Html.Raw(JsonSerializer.Serialize(ptLabels)), @Html.Raw(JsonSerializer.Serialize(ptValues)));
+
+        var elLoai = document.getElementById('chartLoaiSp');
+        if (elLoai && @loaiSpLabels.Count > 0) {
+            new Chart(elLoai, {
+                type: 'polarArea',
+                data: {
+                    labels: @Html.Raw(JsonSerializer.Serialize(loaiSpLabels)),
+                    datasets: [{
+                        data: @Html.Raw(JsonSerializer.Serialize(loaiSpValues)),
+                        backgroundColor: palette.map(function (c) { return c + '99'; })
+                    }]
+                },
+                options: Object.assign({}, defaults, {
+                    scales: { r: { ticks: { display: false } } }
+                })
+            });
+        }
+    })();
+</script>

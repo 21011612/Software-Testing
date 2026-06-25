@@ -1,0 +1,33 @@
+@model IEnumerable<DatBan>
+@{ ViewData["Title"] = "Đặt bàn"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Đặt bàn</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm đặt bàn</a>
+</div>
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead><tr><th>Bàn</th><th>Khách</th><th>SĐT</th><th>Ngày giờ</th><th>SL</th><th>TT</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@d.Ban?.TenBan</td>
+                        <td>@(d.KhachHang?.HoTen ?? d.TenKhach)</td>
+                        <td>@d.SDT</td>
+                        <td>@d.NgayDat.ToString("dd/MM/yyyy") @d.GioBatDau.ToString(@"hh\:mm")</td>
+                        <td>@d.SoNguoi</td>
+                        <td><span class="badge bg-secondary">@d.TrangThai</span></td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Sua" asp-route-id="@d.MaDatBan" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Xoa" asp-route-id="@d.MaDatBan" method="post" class="d-inline" onsubmit="return confirm('Xóa đặt bàn này?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

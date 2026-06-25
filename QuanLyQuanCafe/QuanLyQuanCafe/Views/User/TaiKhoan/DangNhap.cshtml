@@ -1,0 +1,47 @@
+@model DangNhapViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h1><i class="bi bi-person-heart text-muted me-1"></i> Đăng nhập khách hàng</h1>
+        <p class="text-center text-muted small mb-4">Dành cho thành viên đặt món &amp; tích điểm</p>
+        <form asp-action="DangNhap" method="post">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="TenDangNhap" class="form-label fw-semibold"></label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent"><i class="bi bi-person"></i></span>
+                    <input asp-for="TenDangNhap" class="form-control" placeholder="Tên đăng nhập" />
+                </div>
+                <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="MatKhau" class="form-label fw-semibold"></label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent"><i class="bi bi-key"></i></span>
+                    <input asp-for="MatKhau" class="form-control" />
+                </div>
+                <span asp-validation-for="MatKhau" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-tooru w-100 btn-lg mb-3">Đăng nhập</button>
+            <p class="text-center small mb-0">
+                Chưa có tài khoản? <a asp-action="DangKy" class="fw-semibold">Đăng ký ngay</a>
+            </p>
+            <div class="mt-4 p-3 rounded-3" style="background: var(--cream); font-size: 0.8rem;">
+                <strong class="d-block mb-1">Demo khách hàng</strong>
+                <code>khachhang1</code> / <code>khach@123</code>
+            </div>
+            <p class="text-center small mt-3 mb-0 text-muted">
+                Nhân viên / quản lý?
+                <a asp-controller="QuanTri" asp-action="DangNhap" class="fw-semibold">Đăng nhập cổng quản trị</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

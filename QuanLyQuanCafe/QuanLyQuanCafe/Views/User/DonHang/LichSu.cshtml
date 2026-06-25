@@ -1,0 +1,43 @@
+@model IEnumerable<HoaDon>
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+    ViewData["PageTitle"] = "Đơn hàng của tôi";
+    ViewData["PageDesc"] = "Theo dõi trạng thái và thanh toán các hóa đơn";
+}
+
+<partial name="_PageHeader" />
+
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table table-modern mb-0">
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Thời gian</th>
+                    <th>Loại đơn</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var h in Model)
+                {
+                    var statusClass = h.TrangThai == "Chờ thanh toán" ? "status-cho" : "status-done";
+                    <tr>
+                        <td><strong>#@h.MaHD</strong></td>
+                        <td>@h.NgayLap.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@h.LoaiDon</td>
+                        <td class="price-tag">@h.TongThanhToan.ToString("N0") đ</td>
+                        <td><span class="status-badge @statusClass">@h.TrangThai</span></td>
+                        <td>
+                            <a asp-controller="ThanhToan" asp-action="ChiTiet" asp-route-id="@h.MaHD" class="btn btn-sm @(h.TrangThai == "Chờ thanh toán" ? "btn-tooru" : "btn-outline-tooru")">
+                                @(h.TrangThai == "Chờ thanh toán" ? "Thanh toán" : "Chi tiết")
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

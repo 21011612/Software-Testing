@@ -1,0 +1,79 @@
+@model SanPhamAdminViewModel
+@{
+    var loais = ViewBag.Loais as SelectList;
+    var isEdit = Model.MaSP > 0;
+    var previewUrl = ImageHelper.ToUrl(Model.HinhAnh);
+}
+
+<form asp-action="@(isEdit ? "Sua" : "Them")" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    @if (isEdit) { <input type="hidden" asp-for="MaSP" /> }
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-12">
+            <label asp-for="TenSP" class="form-label"></label>
+            <input asp-for="TenSP" class="form-control" />
+            <span asp-validation-for="TenSP" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="MaLoai" class="form-label"></label>
+            <select asp-for="MaLoai" asp-items="loais" class="form-select"></select>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Gia" class="form-label"></label>
+            <input asp-for="Gia" class="form-control" type="number" min="0" step="1000" />
+            <span asp-validation-for="Gia" class="text-danger small"></span>
+        </div>
+        <div class="col-12">
+            <label asp-for="AnhUpload" class="form-label"></label>
+            <input asp-for="AnhUpload" class="form-control" type="file" accept="image/jpeg,image/png,image/webp,image/gif" id="anhUploadInput" />
+            <span asp-validation-for="AnhUpload" class="text-danger small"></span>
+            <span class="form-text">JPG, PNG, WEBP, GIF — tối đa 5 MB. Ảnh lưu vào thư mục <code>wwwroot/images</code>.</span>
+        </div>
+        <div class="col-12">
+            <label class="form-label">Xem trước</label>
+            <div>
+                <img src="@previewUrl" alt="Preview" class="admin-img-preview" id="anhPreview" />
+            </div>
+        </div>
+        <div class="col-12">
+            <label asp-for="HinhAnh" class="form-label"></label>
+            <input asp-for="HinhAnh" class="form-control" placeholder="images/ten_anh.jpg (nếu không tải file)" />
+            <span class="form-text">Hoặc giữ đường dẫn cũ khi sửa — bỏ trống nếu chỉ đổi bằng file tải lên.</span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="DonViTinh" class="form-label"></label>
+            <input asp-for="DonViTinh" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label asp-for="KichCo" class="form-label"></label>
+            <input asp-for="KichCo" class="form-control" />
+        </div>
+        <div class="col-12">
+            <label asp-for="MoTa" class="form-label"></label>
+            <textarea asp-for="MoTa" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="col-12">
+            <div class="form-check">
+                <input asp-for="TrangThai" class="form-check-input" />
+                <label asp-for="TrangThai" class="form-check-label"></label>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-admin-primary"><i class="bi bi-check-lg me-1"></i> Lưu</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+    </div>
+</form>
+<script>
+    (function () {
+        var input = document.getElementById('anhUploadInput');
+        var preview = document.getElementById('anhPreview');
+        if (!input || !preview) return;
+        input.addEventListener('change', function () {
+            var file = input.files && input.files[0];
+            if (!file) return;
+            preview.src = URL.createObjectURL(file);
+        });
+    })();
+</script>

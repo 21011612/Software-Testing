@@ -1,0 +1,100 @@
+@model IEnumerable<SanPham>
+@{
+    ViewData["Title"] = "Thực đơn";
+    ViewData["PageTitle"] = "Thực đơn";
+    ViewData["PageDesc"] = "Tìm món yêu thích, lọc theo loại và thêm vào giỏ chỉ vài giây";
+    var loais = ViewBag.Loais as IEnumerable<LoaiSanPham>;
+    var loaiChon = ViewBag.LoaiChon as int?;
+    var tuKhoa = ViewBag.TuKhoa as string;
+    var sort = ViewBag.Sort as string ?? "mac-dinh";
+    var soMon = Model.Count();
+}
+
+<partial name="_PageHeader" />
+
+<div class="menu-toolbar">
+    <form method="get" asp-action="Index" class="menu-search-form">
+        @if (loaiChon.HasValue)
+        {
+            <input type="hidden" name="loai" value="@loaiChon" />
+        }
+        <div class="menu-search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="search" name="q" value="@tuKhoa" class="menu-search-input" placeholder="Tìm cà phê, trà, sinh tố..." autocomplete="off" />
+            @if (!string.IsNullOrEmpty(tuKhoa))
+            {
+                <a asp-action="Index" asp-route-loai="@loaiChon" class="menu-search-clear" title="Xóa tìm kiếm"><i class="bi bi-x-lg"></i></a>
+            }
+        </div>
+        <select name="sort" class="form-select menu-sort-select" onchange="this.form.submit()">
+            @{
+                var sortOpts = new (string Val, string Label)[]
+                {
+                    ("mac-dinh", "Mặc định"),
+                    ("ten", "Tên A → Z"),
+                    ("gia-tang", "Giá thấp → cao"),
+                    ("gia-giam", "Giá cao → thấp")
+                };
+            }
+            @foreach (var opt in sortOpts)
+            {
+                if (sort == opt.Val)
+                {
+                    <option value="@opt.Val" selected="selected">@opt.Label</option>
+                }
+                else
+                {
+                    <option value="@opt.Val">@opt.Label</option>
+                }
+            }
+        </select>
+        <button type="submit" class="btn btn-tooru d-none d-md-inline-flex">Tìm</button>
+    </form>
+    <p class="menu-result-hint mb-0">
+        <i class="bi bi-cup-straw me-1"></i>
+        @if (!string.IsNullOrEmpty(tuKhoa))
+        {
+            <span>Tìm thấy <strong>@soMon</strong> món cho “<em>@tuKhoa</em>”</span>
+        }
+        else
+        {
+            <span><strong>@soMon</strong> món đang phục vụ</span>
+        }
+    </p>
+</div>
+
+<div class="filter-bar">
+    <ul class="nav filter-pills flex-wrap justify-content-center justify-content-md-start">
+        <li class="nav-item">
+            <a class="nav-link @(loaiChon == null ? "active" : "")" asp-action="Index" asp-route-q="@tuKhoa" asp-route-sort="@sort"><i class="bi bi-grid me-1"></i>Tất cả</a>
+        </li>
+        @foreach (var l in loais ?? Enumerable.Empty<LoaiSanPham>())
+        {
+            <li class="nav-item">
+                <a class="nav-link @(loaiChon == l.MaLoai ? "active" : "")" asp-action="Index" asp-route-loai="@l.MaLoai" asp-route-q="@tuKhoa" asp-route-sort="@sort">@l.TenLoai</a>
+            </li>
+        }
+    </ul>
+</div>
+
+@if (Model.Any())
+{
+    <div class="row g-4" id="menuGrid">
+        @foreach (var sp in Model)
+        {
+            <div class="col-6 col-md-4 col-lg-3 menu-item-card">
+                @{ ViewData["ShowCartActions"] = true; }
+                <partial name="_ProductCard" model="sp" />
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-search"></i></div>
+        <h3 class="h5">Không tìm thấy món phù hợp</h3>
+        <p class="text-muted mb-3">Thử từ khóa khác hoặc xem toàn bộ thực đơn.</p>
+        <a asp-action="Index" class="btn btn-tooru">Xem tất cả món</a>
+    </div>
+}

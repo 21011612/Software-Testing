@@ -1,0 +1,5 @@
+@model NguyenLieuAdminViewModel
+@{ ViewData["Title"] = "Thêm nguyên liệu"; }
+<div class="admin-page-toolbar"><h1 class="admin-page-title">Thêm nguyên liệu</h1><a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại</a></div>
+<div class="admin-form-card"><partial name="_NguyenLieuForm" model="Model" /></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

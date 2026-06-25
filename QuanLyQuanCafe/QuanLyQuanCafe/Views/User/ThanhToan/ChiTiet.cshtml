@@ -1,0 +1,80 @@
+@model ThanhToanViewModel
+@{
+    ViewData["Title"] = $"Thanh toán #{Model.MaHD}";
+    ViewData["PageTitle"] = $"Hóa đơn #{Model.MaHD}";
+    ViewData["PageDesc"] = "Chọn phương thức thanh toán để hoàn tất đơn hàng";
+    var phuongThucs = ViewBag.PhuongThucs as string[] ?? PaymentService.PhuongThucThanhToan;
+    var payIcons = new Dictionary<string, string> {
+        ["Tiền mặt"] = "bi-cash-stack",
+        ["Thẻ"] = "bi-credit-card",
+        ["Chuyển khoản"] = "bi-bank",
+        ["Momo"] = "bi-phone",
+        ["ZaloPay"] = "bi-wallet2",
+        ["ShopeePay"] = "bi-bag-check",
+        ["Khác"] = "bi-three-dots"
+    };
+}
+
+<partial name="_PageHeader" />
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-header"><i class="bi bi-receipt"></i> Chi tiết đơn</div>
+            <div class="panel-body">
+                @foreach (var c in Model.ChiTiet)
+                {
+                    <div class="d-flex gap-3 py-3 border-bottom">
+                        <img src="@ImageHelper.ToUrl(c.HinhAnh)" alt="" class="cart-img" />
+                        <div class="flex-grow-1">
+                            <strong>@c.TenSP</strong>
+                            <span class="text-muted"> × @c.SoLuong</span>
+                            @if (!string.IsNullOrEmpty(c.GhiChu))
+                            {
+                                <br /><small class="text-muted">@c.GhiChu</small>
+                            }
+                        </div>
+                        <span class="fw-semibold">@c.ThanhTien.ToString("N0") đ</span>
+                    </div>
+                }
+                <dl class="row mt-3 mb-0">
+                    <dt class="col-6 text-muted">Tạm tính</dt>
+                    <dd class="col-6 text-end">@Model.TongTienTruocGiam.ToString("N0") đ</dd>
+                    <dt class="col-6 text-muted">Giảm giá</dt>
+                    <dd class="col-6 text-end text-success">-@Model.GiamGia.ToString("N0") đ</dd>
+                    <dt class="col-6 fw-bold">Thanh toán</dt>
+                    <dd class="col-6 text-end price-tag fs-5 mb-0">@Model.TongThanhToan.ToString("N0") đ</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <form asp-action="XacNhan" method="post" class="panel">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="MaHD" value="@Model.MaHD" />
+            <div class="panel-header"><i class="bi bi-credit-card-2-front"></i> Phương thức thanh toán</div>
+            <div class="panel-body">
+                <div class="pay-methods mb-4">
+                    @{ var pi = 0; }
+                    @foreach (var pt in phuongThucs)
+                    {
+                        var icon = payIcons.GetValueOrDefault(pt, "bi-wallet");
+                        var id = "pt_" + pi;
+                        <div class="pay-method-item">
+                            <input type="radio" asp-for="PhuongThuc" value="@pt" id="@id" checked="@(pi == 0 ? "checked" : null)" />
+                            <label for="@id"><i class="bi @icon"></i>@pt</label>
+                        </div>
+                        pi++;
+                    }
+                </div>
+                <div class="mb-4">
+                    <label asp-for="MaGiaoDich" class="form-label fw-semibold"></label>
+                    <input asp-for="MaGiaoDich" class="form-control" placeholder="Mã giao dịch (nếu chuyển khoản / ví)" />
+                </div>
+                <button type="submit" class="btn btn-tooru btn-lg w-100">
+                    <i class="bi bi-check2-circle me-1"></i> Xác nhận @Model.TongThanhToan.ToString("N0") đ
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

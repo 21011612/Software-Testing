@@ -1,0 +1,163 @@
+@model ThanhToanAdminIndexViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+    var phuongThuc = ViewBag.PhuongThuc as string;
+    var trangThai = ViewBag.TrangThai as string;
+    var phuongThucs = ViewBag.PhuongThucs as string[] ?? PaymentService.PhuongThucThanhToan;
+    var payIcons = new Dictionary<string, string> {
+        ["Tiền mặt"] = "bi-cash-stack",
+        ["Thẻ"] = "bi-credit-card",
+        ["Chuyển khoản"] = "bi-bank",
+        ["Momo"] = "bi-phone",
+        ["ZaloPay"] = "bi-wallet2",
+        ["ShopeePay"] = "bi-bag-check",
+        ["Khác"] = "bi-three-dots"
+    };
+}
+
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Thanh toán</h1>
+    <a asp-controller="QuanTriHoaDon" asp-action="Index" asp-route-trangThai="Chờ thanh toán" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-hourglass me-1"></i> HĐ chờ TT
+    </a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="stat-card stat-card-gold">
+            <div class="stat-label"><i class="bi bi-receipt me-1"></i> Giao dịch (bộ lọc)</div>
+            <div class="stat-value">@Model.TongGiaoDich</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-currency-dollar me-1"></i> Tổng thu</div>
+            <div class="stat-value fs-5">@Model.TongSoTien.ToString("N0") đ</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-pie-chart me-1"></i> Theo phương thức</div>
+            <div class="small mt-1">
+                @if (Model.TheoPhuongThuc.Count == 0)
+                {
+                    <span class="text-muted">—</span>
+                }
+                @foreach (var pt in Model.TheoPhuongThuc.Take(3))
+                {
+                    <div class="d-flex justify-content-between"><span>@pt.Nhan</span><span class="fw-semibold">@pt.GiaTri.ToString("N0") đ</span></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="admin-form-card mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-2">
+            <label class="form-label small">Phương thức</label>
+            <select name="phuongThuc" class="form-select form-select-sm">
+                <option value="">Tất cả</option>
+                @foreach (var p in phuongThucs)
+                {
+                    <option value="@p" selected="@(phuongThuc == p)">@p</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">Trạng thái</label>
+            <select name="trangThai" class="form-select form-select-sm">
+                <option value="">Tất cả</option>
+                <option value="Thành công" selected="@(trangThai == "Thành công")">Thành công</option>
+                <option value="Hoàn tiền" selected="@(trangThai == "Hoàn tiền")">Hoàn tiền</option>
+                <option value="Thất bại" selected="@(trangThai == "Thất bại")">Thất bại</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">Từ ngày</label>
+            <input name="tuNgay" type="date" value="@ViewBag.TuNgay" class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">Đến ngày</label>
+            <input name="denNgay" type="date" value="@ViewBag.DenNgay" class="form-control form-control-sm" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">Mã HĐ / giao dịch</label>
+            <input name="q" value="@ViewBag.Q" class="form-control form-control-sm" placeholder="#HĐ, mã TT..." />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-admin-primary btn-sm w-100">Lọc</button>
+        </div>
+    </form>
+</div>
+
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>#TT</th>
+                    <th>Thời gian</th>
+                    <th>Hóa đơn</th>
+                    <th>Khách / Bàn</th>
+                    <th>Phương thức</th>
+                    <th class="text-end">Số tiền</th>
+                    <th>Mã GD</th>
+                    <th>TT</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.DanhSach.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted py-4">Chưa có giao dịch thanh toán.</td></tr>
+                }
+                @foreach (var t in Model.DanhSach)
+                {
+                    var hd = t.HoaDon;
+                    var icon = payIcons.GetValueOrDefault(t.PhuongThuc, "bi-wallet2");
+                    <tr>
+                        <td><strong>#@t.MaTT</strong></td>
+                        <td class="text-nowrap">@t.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <a asp-controller="QuanTriHoaDon" asp-action="ChiTiet" asp-route-id="@t.MaHD" class="fw-semibold">#@t.MaHD</a>
+                            @if (hd != null)
+                            {
+                                <div class="small text-muted">@hd.LoaiDon</div>
+                            }
+                        </td>
+                        <td>@(hd?.Ban?.TenBan ?? hd?.KhachHang?.HoTen ?? hd?.TenKhach ?? "—")</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi @icon me-1"></i>@t.PhuongThuc
+                            </span>
+                        </td>
+                        <td class="text-end price-tag">@t.SoTien.ToString("N0") đ</td>
+                        <td class="small">@(t.MaGiaoDich ?? "—")</td>
+                        <td>
+                            @{
+                                var badge = t.TrangThai switch
+                                {
+                                    "Thành công" => "bg-success",
+                                    "Hoàn tiền" => "bg-warning text-dark",
+                                    "Thất bại" => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @badge">@t.TrangThai</span>
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="ChiTiet" asp-route-id="@t.MaTT" class="btn btn-sm btn-outline-primary" title="Chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (Model.DanhSach.Count >= 200)
+    {
+        <p class="small text-muted mb-0 p-2">Hiển thị tối đa 200 giao dịch mới nhất. Thu hẹp bộ lọc để xem chính xác hơn.</p>
+    }
+</div>

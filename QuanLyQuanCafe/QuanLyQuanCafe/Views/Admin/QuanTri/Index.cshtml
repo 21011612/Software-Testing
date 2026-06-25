@@ -1,0 +1,95 @@
+@model AdminDashboardViewModel
+@using QuanLyQuanCafe.Models
+@{
+    ViewData["Title"] = "Bảng điều khiển";
+    var donGanDay = ViewBag.DonGanDay as IEnumerable<HoaDon> ?? [];
+    var tk = Model.ThongKe.TongKet;
+}
+
+<div class="admin-page-toolbar">
+    <p class="text-muted small mb-0"><i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dddd, dd/MM/yyyy")</p>
+</div>
+
+<div class="dashboard-kpi-grid row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+        <div class="stat-card stat-card-gold">
+            <div class="stat-label"><i class="bi bi-currency-dollar me-1"></i> Doanh thu hôm nay</div>
+            <div class="stat-value fs-5">@Model.DoanhThuHomNay.ToString("N0") đ</div>
+            <div class="small text-muted">@Model.DonHomNay đơn đã TT</div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-hourglass-split me-1"></i> Chờ thanh toán</div>
+            <div class="stat-value">@Model.HoaDonChoThanhToan</div>
+            <a asp-controller="QuanTriHoaDon" asp-action="Index" asp-route-trangThai="Chờ thanh toán" class="small">Chi tiết →</a>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-grid-3x3 me-1"></i> Bàn phục vụ</div>
+            <div class="stat-value">@Model.BanDangPhucVu</div>
+            <a asp-action="Ban" class="small">Quản lý bàn →</a>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-calendar-check me-1"></i> Đặt bàn sắp tới</div>
+            <div class="stat-value">@Model.DatBanSapToi</div>
+            <a asp-controller="QuanTriDatBan" asp-action="Index" class="small">Lịch đặt →</a>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card">
+            <div class="stat-label">Sản phẩm</div>
+            <div class="stat-value">@Model.TongSanPham</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card">
+            <div class="stat-label">Khách hàng</div>
+            <div class="stat-value">@Model.KhachHang</div>
+        </div>
+    </div>
+    @if (tk != null)
+    {
+        <div class="col-12 col-md-4 col-xl-4">
+            <div class="stat-card">
+                <div class="stat-label">Doanh thu kỳ (@Model.ThongKe.TuNgay.ToString("dd/MM") – @Model.ThongKe.DenNgay.ToString("dd/MM"))</div>
+                <div class="stat-value fs-5">@tk.TongDoanhThuThuc.ToString("N0") đ</div>
+                <div class="small text-muted">@tk.TongSoDon đơn · giảm @tk.TongGiamGia.ToString("N0") đ</div>
+            </div>
+        </div>
+    }
+</div>
+
+<partial name="_ThongKeBlock" model="Model.ThongKe" />
+
+<div class="dashboard-panel">
+    <div class="dashboard-panel-head">
+        <h2 class="h6 mb-0 fw-bold text-secondary text-uppercase">Hóa đơn gần đây</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr><th>#</th><th>Thời gian</th><th>Nhân viên</th><th>Tổng</th><th>Trạng thái</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var h in donGanDay)
+                {
+                    <tr>
+                        <td><a asp-controller="QuanTriHoaDon" asp-action="ChiTiet" asp-route-id="@h.MaHD">#@h.MaHD</a></td>
+                        <td>@h.NgayLap.ToString("dd/MM HH:mm")</td>
+                        <td>@h.NhanVien?.HoTen</td>
+                        <td class="price-tag">@h.TongThanhToan.ToString("N0") đ</td>
+                        <td><span class="badge bg-secondary">@h.TrangThai</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ThongKeScripts" model="Model.ThongKe" />
+}

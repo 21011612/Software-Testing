@@ -1,0 +1,26 @@
+@model HoaDonTaoAdminViewModel
+@{ ViewData["Title"] = "Tạo hóa đơn"; var loaiDons = new[] { "Tại quán", "Mang về", "Giao hàng" }; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Tạo hóa đơn mới</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại</a>
+</div>
+<div class="admin-form-card">
+    <form asp-action="Tao" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="LoaiDon" class="form-label"></label>
+                <select asp-for="LoaiDon" class="form-select">@foreach (var l in loaiDons) { <option value="@l">@l</option> }</select>
+            </div>
+            <div class="col-md-4"><label asp-for="MaBan" class="form-label">Bàn</label><select asp-for="MaBan" class="form-select" asp-items="ViewBag.Bans"><option value="">—</option></select></div>
+            <div class="col-md-4"><label asp-for="MaKH" class="form-label">Khách</label><select asp-for="MaKH" class="form-select" asp-items="ViewBag.KhachHangs"><option value="">—</option></select></div>
+            <div class="col-md-4"><label asp-for="TenKhach" class="form-label"></label><input asp-for="TenKhach" class="form-control" /></div>
+            <div class="col-md-4"><label asp-for="SDT" class="form-label"></label><input asp-for="SDT" class="form-control" /></div>
+            <div class="col-md-4"><label asp-for="DiaChiGiao" class="form-label"></label><input asp-for="DiaChiGiao" class="form-control" /></div>
+            <div class="col-12"><label asp-for="GhiChu" class="form-label"></label><textarea asp-for="GhiChu" class="form-control" rows="2"></textarea></div>
+        </div>
+        <div class="mt-4"><button type="submit" class="btn btn-admin-primary"><i class="bi bi-receipt me-1"></i> Tạo &amp; mở POS</button></div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

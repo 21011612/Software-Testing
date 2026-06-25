@@ -1,0 +1,54 @@
+@model IEnumerable<HoaDon>
+@{
+    ViewData["Title"] = "Hóa đơn";
+    var trangThai = ViewBag.TrangThai as string;
+    var loaiDon = ViewBag.LoaiDon as string;
+}
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Hóa đơn</h1>
+    <a asp-action="Tao" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Tạo HĐ</a>
+</div>
+<div class="admin-form-card mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-2">
+            <label class="form-label small">Trạng thái</label>
+            <select name="trangThai" class="form-select form-select-sm">
+                <option value="">Tất cả</option>
+                <option value="Chờ thanh toán" selected="@(trangThai == "Chờ thanh toán")">Chờ TT</option>
+                <option value="Đã thanh toán" selected="@(trangThai == "Đã thanh toán")">Đã TT</option>
+                <option value="Đã hủy" selected="@(trangThai == "Đã hủy")">Đã hủy</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">Loại đơn</label>
+            <select name="loaiDon" class="form-select form-select-sm">
+                <option value="">Tất cả</option>
+                <option value="Tại quán" selected="@(loaiDon == "Tại quán")">Tại quán</option>
+                <option value="Mang về" selected="@(loaiDon == "Mang về")">Mang về</option>
+                <option value="Giao hàng" selected="@(loaiDon == "Giao hàng")">Giao hàng</option>
+            </select>
+        </div>
+        <div class="col-md-2"><label class="form-label small">Từ</label><input name="tuNgay" type="date" value="@ViewBag.TuNgay" class="form-control form-control-sm" /></div>
+        <div class="col-md-2"><label class="form-label small">Đến</label><input name="denNgay" type="date" value="@ViewBag.DenNgay" class="form-control form-control-sm" /></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-admin-primary btn-sm w-100">Lọc</button></div>
+    </form>
+</div>
+<div class="admin-table-wrap">
+    <table class="table admin-table mb-0">
+        <thead><tr><th>#</th><th>Thời gian</th><th>Bàn/KH</th><th>Loại</th><th>Tổng</th><th>TT</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var h in Model)
+            {
+                <tr>
+                    <td><strong>#@h.MaHD</strong></td>
+                    <td>@h.NgayLap.ToString("dd/MM HH:mm")</td>
+                    <td>@(h.Ban?.TenBan ?? h.KhachHang?.HoTen ?? h.TenKhach ?? "—")</td>
+                    <td>@h.LoaiDon</td>
+                    <td class="price-tag">@h.TongThanhToan.ToString("N0") đ</td>
+                    <td><span class="badge bg-secondary">@h.TrangThai</span></td>
+                    <td><a asp-action="ChiTiet" asp-route-id="@h.MaHD" class="btn btn-sm btn-outline-primary">POS</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

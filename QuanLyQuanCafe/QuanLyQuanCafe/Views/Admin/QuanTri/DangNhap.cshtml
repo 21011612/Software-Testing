@@ -1,0 +1,50 @@
+@model DangNhapViewModel
+@{
+    ViewData["Title"] = "Đăng nhập quản trị";
+    Layout = "_LayoutAdminLogin";
+}
+
+<div class="admin-login-card">
+    <div class="admin-login-brand">
+        <span class="admin-login-icon"><i class="bi bi-shield-lock-fill"></i></span>
+        <h1>Cổng quản trị</h1>
+        <p>Tooru Coffee · Admin &amp; Nhân viên</p>
+    </div>
+    <form asp-action="DangNhap" method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="mb-3">
+            <label asp-for="TenDangNhap" class="form-label fw-semibold"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                <input asp-for="TenDangNhap" class="form-control" placeholder="admin, barista01..." />
+            </div>
+            <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="MatKhau" class="form-label fw-semibold"></label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                <input asp-for="MatKhau" class="form-control" />
+            </div>
+            <span asp-validation-for="MatKhau" class="text-danger small"></span>
+        </div>
+        <button type="submit" class="btn btn-admin-primary w-100 btn-lg mb-3">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập quản trị
+        </button>
+        <p class="text-center small mb-0">
+            <a asp-controller="Home" asp-action="Index" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Về trang khách</a>
+        </p>
+        <div class="admin-demo-hint mt-4 mb-0">
+            <strong>Tài khoản quản trị (copy chính xác)</strong><br />
+            Đăng nhập: <code>admin</code><br />
+            Mật khẩu: <code>admin@Tooru2026!</code> <span class="text-danger">(có dấu ! ở cuối)</span><br />
+            <hr class="my-2" />
+            Nhân viên: <code>barista01</code> / <code>barista@123</code>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

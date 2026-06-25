@@ -1,0 +1,18 @@
+@model SanPhamAdminViewModel
+@{
+    ViewData["Title"] = "Thêm sản phẩm";
+    var loais = ViewBag.Loais as SelectList;
+}
+
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Thêm sản phẩm</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Quay lại</a>
+</div>
+
+<div class="admin-form-card">
+    <partial name="_SanPhamForm" model="Model" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

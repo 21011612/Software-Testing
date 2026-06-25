@@ -1,0 +1,61 @@
+@model ThongKeViewModel
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="chart-card">
+            <div class="chart-card-head">
+                <h2>Doanh thu theo ngày</h2>
+                <span class="text-muted small">Đơn đã thanh toán</span>
+            </div>
+            <div class="chart-wrap chart-wrap-tall">
+                <canvas id="chartDoanhThu"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card h-100">
+            <div class="chart-card-head">
+                <h2>Số đơn / ngày</h2>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="chartSoDon"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-4">
+        <div class="chart-card">
+            <div class="chart-card-head"><h2>Top sản phẩm</h2></div>
+            <div class="chart-wrap">
+                <canvas id="chartTopSp"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="chart-card">
+            <div class="chart-card-head"><h2>Doanh thu theo loại món</h2></div>
+            <div class="chart-wrap">
+                <canvas id="chartLoaiSp"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-xl-4">
+        <div class="chart-card">
+            <div class="chart-card-head"><h2>Loại đơn & thanh toán</h2></div>
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="chart-wrap chart-wrap-sm">
+                        <canvas id="chartLoaiDon"></canvas>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="chart-wrap chart-wrap-sm">
+                        <canvas id="chartPhuongThuc"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

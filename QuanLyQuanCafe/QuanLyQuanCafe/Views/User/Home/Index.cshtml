@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+    var monNoiBat = ViewBag.MonNoiBat as IEnumerable<SanPham>;
+    var loais = ViewBag.Loais as IEnumerable<LoaiSanPham>;
+    var khuyenMai = ViewBag.KhuyenMai as IEnumerable<KhuyenMai>;
+}
+
+<section class="hero-tooru">
+    <div class="hero-inner">
+        <span class="hero-badge">Đà Nẵng · Since 2023</span>
+        <h1 class="hero-title">Tooru Coffee</h1>
+        <p class="hero-sub">Không gian cà phê ấm áp — gọi món & thanh toán trong vài chạm</p>
+        <p class="hero-meta"><i class="bi bi-geo-alt"></i> 123 Nguyễn Tất Thành, Sơn Trà, Đà Nẵng</p>
+
+        <form class="hero-search" method="get" asp-controller="ThucDon" asp-action="Index">
+            <div class="hero-search-inner">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" placeholder="Tìm món: cà phê sữa, trà đào, sinh tố..." aria-label="Tìm món" />
+                <button type="submit" class="btn btn-tooru">Tìm món</button>
+            </div>
+        </form>
+
+        <div class="hero-actions">
+            <a asp-controller="ThucDon" asp-action="Index" class="btn btn-lg btn-tooru">
+                <i class="bi bi-journal-text me-1"></i> Xem thực đơn
+            </a>
+            @if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                <a asp-controller="TaiKhoan" asp-action="DangKy" class="btn btn-lg btn-hero-outline">Đăng ký thành viên</a>
+            }
+        </div>
+    </div>
+</section>
+
+@if (khuyenMai?.Any() == true)
+{
+    <section class="promo-strip mb-4">
+        <div class="promo-strip-head">
+            <i class="bi bi-tag-fill"></i>
+            <span>Ưu đãi đang diễn ra</span>
+        </div>
+        <div class="promo-cards">
+            @foreach (var km in khuyenMai)
+            {
+                <div class="promo-card">
+                    <strong>@km.TenKM</strong>
+                    <span class="small d-block text-muted mt-1">
+                        @(km.LoaiGiam == "PhanTram" ? $"Giảm {km.GiaTriGiam}%" : $"Giảm {km.GiaTriGiam:N0} đ")
+                        · đến @km.NgayKetThuc.ToString("dd/MM/yyyy")
+                    </span>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@if (loais?.Any() == true)
+{
+    <section class="category-chips mb-5">
+        <div class="section-head section-head-start">
+            <h2>Danh mục nhanh</h2>
+            <p>Chạm để lọc thực đơn theo loại món</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+            @foreach (var l in loais)
+            {
+                <a asp-controller="ThucDon" asp-action="Index" asp-route-loai="@l.MaLoai" class="category-chip">
+                    <i class="bi bi-cup-straw"></i> @l.TenLoai
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<div class="section-head">
+    <h2>Món được yêu thích</h2>
+    <p>Cà phê, trà &amp; món ăn được khách yêu thích tại quán</p>
+</div>
+
+<div class="row g-4 mb-5">
+    @foreach (var sp in monNoiBat ?? Enumerable.Empty<SanPham>())
+    {
+        <div class="col-6 col-md-4 col-lg-3">
+            <partial name="_ProductCard" model="sp" />
+        </div>
+    }
+</div>
+
+<div class="cta-band mb-5">
+    <div class="cta-band-text">
+        <h3>Sẵn sàng gọi món?</h3>
+        <p class="mb-0 text-muted">Thêm vào giỏ, chọn tại quán hoặc mang về — thanh toán Momo, thẻ, tiền mặt.</p>
+    </div>
+    <a asp-controller="DonHang" asp-action="GioHang" class="btn btn-lg btn-tooru">
+        <i class="bi bi-bag-heart me-1"></i> Mở giỏ hàng
+    </a>
+</div>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-search"></i></div>
+        <h3>Tìm món nhanh</h3>
+        <p class="small text-muted mb-0">Ô tìm kiếm trên trang chủ &amp; thực đơn, lọc theo loại &amp; giá</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-phone"></i></div>
+        <h3>Gọi món trực quan</h3>
+        <p class="small text-muted mb-0">Thực đơn đầy đủ, ghi chú từng món khi đặt</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-award"></i></div>
+        <h3>Tích điểm hạng</h3>
+        <p class="small text-muted mb-0">Thường → Bạc → Vàng → Kim Cương</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="bi bi-chat-dots"></i></div>
+        <h3>Trợ lý Tooru</h3>
+        <p class="small text-muted mb-0">Chat góc phải — hỏi giờ mở, đặt bàn, khuyến mãi</p>
+    </div>
+</div>

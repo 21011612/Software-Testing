@@ -1,0 +1,22 @@
+@model KhuyenMaiAdminViewModel
+@{ var isEdit = Model.MaKM > 0; }
+<form asp-action="@(isEdit ? "Sua" : "Them")" method="post">
+    @Html.AntiForgeryToken()
+    @if (isEdit) { <input type="hidden" asp-for="MaKM" /> }
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-12"><label asp-for="TenKM" class="form-label"></label><input asp-for="TenKM" class="form-control" /></div>
+        <div class="col-12"><label asp-for="MoTa" class="form-label"></label><textarea asp-for="MoTa" class="form-control" rows="2"></textarea></div>
+        <div class="col-md-6"><label asp-for="LoaiGiam" class="form-label"></label><select asp-for="LoaiGiam" class="form-select"><option value="PhanTram">Phần trăm (%)</option><option value="SoTienCoDinh">Số tiền cố định</option></select></div>
+        <div class="col-md-6"><label asp-for="GiaTriGiam" class="form-label"></label><input asp-for="GiaTriGiam" class="form-control" type="number" min="0" step="1000" /></div>
+        <div class="col-md-6"><label asp-for="DieuKienToiThieu" class="form-label"></label><input asp-for="DieuKienToiThieu" class="form-control" type="number" min="0" step="1000" /></div>
+        <div class="col-md-6"><label asp-for="SoLuongToiDa" class="form-label"></label><input asp-for="SoLuongToiDa" class="form-control" type="number" min="1" /></div>
+        <div class="col-md-6"><label asp-for="NgayBatDau" class="form-label"></label><input asp-for="NgayBatDau" class="form-control" type="date" /></div>
+        <div class="col-md-6"><label asp-for="NgayKetThuc" class="form-label"></label><input asp-for="NgayKetThuc" class="form-control" type="date" /></div>
+        <div class="col-12"><div class="form-check"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div></div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-admin-primary"><i class="bi bi-check-lg me-1"></i> Lưu</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+    </div>
+</form>

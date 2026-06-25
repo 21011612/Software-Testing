@@ -1,0 +1,42 @@
+@model IEnumerable<NhanVien>
+@{ ViewData["Title"] = "Nhân viên"; var isAdmin = User.IsInRole("Admin"); }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Nhân viên</h1>
+    @if (isAdmin)
+    {
+        <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm nhân viên</a>
+    }
+</div>
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead><tr><th>Họ tên</th><th>Chức vụ</th><th>SĐT</th><th>Lương CB</th><th>TT</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+                @foreach (var nv in Model)
+                {
+                    <tr class="@(!nv.TrangThai ? "table-secondary" : "")">
+                        <td class="fw-semibold">@nv.HoTen</td>
+                        <td>@nv.ChucVu</td>
+                        <td>@nv.SDT</td>
+                        <td class="price-tag">@nv.LuongCoBan.ToString("N0") đ</td>
+                        <td><span class="badge @(nv.TrangThai ? "bg-success" : "bg-secondary")">@(nv.TrangThai ? "Hoạt động" : "Nghỉ")</span></td>
+                        <td class="text-end text-nowrap">
+                            @if (isAdmin)
+                            {
+                                <a asp-action="Sua" asp-route-id="@nv.MaNV" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="Xoa" asp-route-id="@nv.MaNV" method="post" class="d-inline" onsubmit="return confirm('Xóa nhân viên @nv.HoTen?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">—</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

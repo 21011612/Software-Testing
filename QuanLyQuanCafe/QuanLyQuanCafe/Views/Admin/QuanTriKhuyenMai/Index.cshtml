@@ -1,0 +1,33 @@
+@model IEnumerable<KhuyenMai>
+@{ ViewData["Title"] = "Khuyến mãi"; var homNay = DateTime.Today; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Khuyến mãi</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm KM</a>
+</div>
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead><tr><th>Tên</th><th>Giảm</th><th>Thời gian</th><th>Đã dùng</th><th>TT</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+                @foreach (var km in Model)
+                {
+                    var dangChay = km.TrangThai && homNay >= km.NgayBatDau && homNay <= km.NgayKetThuc;
+                    <tr>
+                        <td><strong>@km.TenKM</strong></td>
+                        <td>@(km.LoaiGiam == "PhanTram" ? $"{km.GiaTriGiam}%" : $"{km.GiaTriGiam:N0} đ")</td>
+                        <td class="small">@km.NgayBatDau.ToString("dd/MM/yy") – @km.NgayKetThuc.ToString("dd/MM/yy")</td>
+                        <td>@km.DaSuDung / @km.SoLuongToiDa</td>
+                        <td><span class="badge @(dangChay ? "bg-success" : "bg-secondary")">@(dangChay ? "Đang chạy" : "Tắt/Hết hạn")</span></td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Sua" asp-route-id="@km.MaKM" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Xoa" asp-route-id="@km.MaKM" method="post" class="d-inline" onsubmit="return confirm('Xóa KM @km.TenKM?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+@startuml Sequence_DangNhap_KhachHang
+' ================================================
+' SEQUENCE DIAGRAM: Luồng Đăng nhập Khách hàng
+' ================================================
+
+title Sequence - Đăng nhập Khách hàng
+
+actor "Khách hàng" as User
+participant "TaiKhoanController" as Controller
+participant "AuthService" as Auth
+database "TooruCoffeeDbContext\n(TaiKhoan + KhachHang)" as DB
+participant "PasswordHelper" as Pwd
+participant "Cookie Authentication" as Cookie
+
+User -> Controller : GET /TaiKhoan/DangNhap
+Controller --> User : Hiển thị form (DangNhapViewModel)
+
+User -> Controller : POST /TaiKhoan/DangNhap\n(TenDangNhap, MatKhau, ReturnUrl)
+Controller -> Auth : DangNhapKhachHangAsync(model)
+Auth -> Auth : DangNhapAsync(model, "KhachHang")
+
+Auth -> DB : Find TaiKhoan\n( TenDangNhap.ToLower(), TrangThai=true )
+DB --> Auth : TaiKhoan (hoặc null)
+
+alt Không tìm thấy tài khoản
+    Auth --> Controller : (false, "Tên đăng nhập hoặc mật khẩu không đúng...")
+    Controller --> User : Hiển thị lỗi validation
+else Tìm thấy
+    Auth -> Pwd : Verify(MatKhau, MatKhauHash)
+    alt Sai mật khẩu
+        Auth --> Controller : (false, "Tên đăng nhập hoặc mật khẩu không đúng...")
+        Controller --> User : Hiển thị lỗi
+    else Mật khẩu đúng
+        alt Vai trò không phải "KhachHang"
+            Auth --> Controller : (false, "Tài khoản nhân viên/quản trị. Vui lòng đăng nhập tại cổng Quản trị.")
+            Controller --> User : Hiển thị lỗi
+        else Vai trò hợp lệ
+            Auth -> DB : Cập nhật LanDangNhapCuoi = Now
+            DB --> Auth : Saved
+
+            Auth -> Auth : Tạo Claims\n(NameIdentifier, Name, Role="KhachHang", HoTen, MaKH)
+            Auth -> Cookie : SignInAsync(Cookie, ClaimsPrincipal, IsPersistent=7days)
+            Cookie --> Auth : Success
+
+            Auth --> Controller : (true, null)
+            Controller -> Controller : Kiểm tra ReturnUrl hợp lệ?
+            alt Có ReturnUrl
+                Controller --> User : Redirect(ReturnUrl)
+            else Không
+                Controller --> User : RedirectToAction("Index", "ThucDon")
+            end
+        end
+    end
+end
+
+@enduml

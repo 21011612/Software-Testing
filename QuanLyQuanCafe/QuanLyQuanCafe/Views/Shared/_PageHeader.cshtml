@@ -1,0 +1,14 @@
+@{
+    var title = ViewData["PageTitle"] as string ?? ViewData["Title"]?.ToString() ?? "";
+    var desc = ViewData["PageDesc"] as string;
+    var eyebrow = ViewData["PageEyebrow"] as string ?? "Tooru Coffee";
+}
+
+<div class="page-header">
+    <div class="page-header-eyebrow">@eyebrow</div>
+    <h1 class="page-header-title">@title</h1>
+    @if (!string.IsNullOrEmpty(desc))
+    {
+        <p class="page-header-desc">@desc</p>
+    }
+</div>

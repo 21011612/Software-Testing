@@ -1,0 +1,54 @@
+@model IEnumerable<SanPham>
+@{
+    ViewData["Title"] = "Sản phẩm";
+}
+
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Quản lý sản phẩm</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm sản phẩm</a>
+</div>
+
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên</th>
+                    <th>Loại</th>
+                    <th>Giá</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sp in Model)
+                {
+                    <tr class="@(!sp.TrangThai ? "table-secondary" : "")">
+                        <td><img src="@ImageHelper.ToUrl(sp.HinhAnh)" alt="" class="admin-thumb" /></td>
+                        <td><strong>@sp.TenSP</strong></td>
+                        <td>@sp.LoaiSanPham?.TenLoai</td>
+                        <td>@sp.Gia.ToString("N0") đ</td>
+                        <td>
+                            @if (sp.TrangThai)
+                            {
+                                <span class="badge bg-success">Đang bán</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Ẩn</span>
+                            }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Sua" asp-route-id="@sp.MaSP" class="btn btn-sm btn-outline-primary" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Xoa" asp-route-id="@sp.MaSP" method="post" class="d-inline" onsubmit="return confirm('Xóa hoặc ẩn sản phẩm này?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

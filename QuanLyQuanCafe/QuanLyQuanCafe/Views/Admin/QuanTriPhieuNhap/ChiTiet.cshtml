@@ -1,0 +1,61 @@
+@model PhieuNhap
+@{
+    ViewData["Title"] = "Phiếu nhập #" + Model.MaPN;
+    var line = ViewBag.Line as ChiTietPhieuNhapLineViewModel ?? new ChiTietPhieuNhapLineViewModel();
+}
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Phiếu nhập #@Model.MaPN</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Danh sách</a>
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-8">
+        <div class="admin-form-card">
+            <p class="mb-1"><strong>NCC:</strong> @Model.NhaCungCap?.TenNCC · <strong>NV:</strong> @Model.NhanVien?.HoTen</p>
+            <p class="text-muted small mb-0">@Model.NgayNhap.ToString("dd/MM/yyyy HH:mm") · @(Model.GhiChu ?? "")</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card stat-card-gold">
+            <div class="stat-label">Tổng phiếu</div>
+            <div class="stat-value">@Model.TongTien.ToString("N0") đ</div>
+        </div>
+    </div>
+</div>
+<div class="admin-table-wrap mb-3">
+    <table class="table admin-table mb-0">
+        <thead><tr><th>NL</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var c in Model.ChiTietPhieuNhaps)
+            {
+                <tr>
+                    <td>@c.NguyenLieu?.TenNL</td>
+                    <td>@c.SoLuong</td>
+                    <td>@c.DonGia.ToString("N0")</td>
+                    <td class="price-tag">@c.ThanhTien.ToString("N0")</td>
+                    <td>
+                        <form asp-action="XoaDong" method="post" class="d-inline" onsubmit="return confirm('Xóa dòng?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.MaPN" />
+                            <input type="hidden" name="maCt" value="@c.MaCTPN" />
+                            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="admin-form-card">
+    <h2 class="h6 fw-bold mb-3">Thêm dòng nhập</h2>
+    <form asp-action="ThemDong" method="post" class="row g-2 align-items-end">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.MaPN" />
+        <div class="col-md-5">
+            <label class="form-label">Nguyên liệu</label>
+            <select name="MaNL" class="form-select" asp-items="ViewBag.NguyenLieus" required></select>
+        </div>
+        <div class="col-md-2"><label class="form-label">Số lượng</label><input name="SoLuong" type="number" step="0.001" min="0.001" class="form-control" value="1" required /></div>
+        <div class="col-md-3"><label class="form-label">Đơn giá</label><input name="DonGia" type="number" min="0" class="form-control" required /></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-admin-primary w-100">Thêm</button></div>
+    </form>
+</div>

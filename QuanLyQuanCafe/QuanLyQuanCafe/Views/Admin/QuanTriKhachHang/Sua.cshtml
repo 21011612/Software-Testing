@@ -1,0 +1,8 @@
+@model KhachHangAdminViewModel
+@{ ViewData["Title"] = "Sửa khách hàng"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Sửa khách hàng</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Quay lại</a>
+</div>
+<div class="admin-form-card"><partial name="_KhachHangForm" model="Model" /></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

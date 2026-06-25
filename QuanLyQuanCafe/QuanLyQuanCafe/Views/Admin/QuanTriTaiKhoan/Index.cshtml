@@ -1,0 +1,29 @@
+@model IEnumerable<TaiKhoan>
+@{ ViewData["Title"] = "Tài khoản"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Tài khoản</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm TK</a>
+</div>
+<div class="admin-table-wrap">
+    <table class="table admin-table mb-0">
+        <thead><tr><th>Đăng nhập</th><th>Vai trò</th><th>Liên kết</th><th>TT</th><th class="text-end">Thao tác</th></tr></thead>
+        <tbody>
+            @foreach (var t in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@t.TenDangNhap</td>
+                    <td><span class="badge bg-secondary">@t.VaiTro</span></td>
+                    <td>@(t.NhanVien?.HoTen ?? t.KhachHang?.HoTen ?? "—")</td>
+                    <td>@(t.TrangThai ? "Bật" : "Khóa")</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Sua" asp-route-id="@t.MaTK" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Xoa" asp-route-id="@t.MaTK" method="post" class="d-inline" onsubmit="return confirm('Xóa @t.TenDangNhap?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

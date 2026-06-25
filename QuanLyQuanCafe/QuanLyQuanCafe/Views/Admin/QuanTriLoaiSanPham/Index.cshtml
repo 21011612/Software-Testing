@@ -1,0 +1,30 @@
+@model IEnumerable<LoaiSanPham>
+@{ ViewData["Title"] = "Loại sản phẩm"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Loại sản phẩm</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm loại</a>
+</div>
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead><tr><th>Tên</th><th>Thứ tự</th><th>Hiển thị</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+                @foreach (var l in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@l.TenLoai</td>
+                        <td>@l.ThuTuHienThi</td>
+                        <td>@(l.TrangThai ? "Có" : "Ẩn")</td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Sua" asp-route-id="@l.MaLoai" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Xoa" asp-route-id="@l.MaLoai" method="post" class="d-inline" onsubmit="return confirm('Xóa @l.TenLoai?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+@model IEnumerable<HoaDon>
+@{
+    ViewData["Title"] = "Hóa đơn";
+    var trangThai = ViewBag.TrangThai as string;
+}
+
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Hóa đơn</h1>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-action="HoaDon" class="btn btn-sm @(string.IsNullOrEmpty(trangThai) ? "btn-admin-primary" : "btn-outline-secondary")">Tất cả</a>
+        <a asp-action="HoaDon" asp-route-trangThai="Chờ thanh toán" class="btn btn-sm @(trangThai == "Chờ thanh toán" ? "btn-admin-primary" : "btn-outline-secondary")">Chờ TT</a>
+        <a asp-action="HoaDon" asp-route-trangThai="Đã thanh toán" class="btn btn-sm @(trangThai == "Đã thanh toán" ? "btn-admin-primary" : "btn-outline-secondary")">Đã TT</a>
+    </div>
+</div>
+
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr><th>#</th><th>Bàn</th><th>Nhân viên</th><th>Tổng</th><th>Trạng thái</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var h in Model)
+                {
+                    <tr>
+                        <td><strong>#@h.MaHD</strong></td>
+                        <td>@(h.Ban?.TenBan ?? "—")</td>
+                        <td>@h.NhanVien?.HoTen</td>
+                        <td class="price-tag">@h.TongThanhToan.ToString("N0") đ</td>
+                        <td><span class="badge bg-secondary">@h.TrangThai</span></td>
+                        <td>
+                            <a asp-controller="ThanhToan" asp-action="ChiTiet" asp-route-id="@h.MaHD" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

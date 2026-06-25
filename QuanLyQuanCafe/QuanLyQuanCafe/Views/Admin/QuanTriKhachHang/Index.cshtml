@@ -1,0 +1,32 @@
+@model IEnumerable<KhachHang>
+@{ ViewData["Title"] = "Khách hàng"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Khách hàng</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm khách</a>
+</div>
+<div class="admin-table-wrap">
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead><tr><th>Họ tên</th><th>SĐT</th><th>Email</th><th>Điểm</th><th>Hạng</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+                @foreach (var k in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@k.HoTen</td>
+                        <td>@k.SDT</td>
+                        <td>@(k.Email ?? "—")</td>
+                        <td>@k.DiemTichLuy.ToString("N0")</td>
+                        <td><span class="badge bg-warning text-dark">@k.HangThanhVien</span></td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Sua" asp-route-id="@k.MaKH" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Xoa" asp-route-id="@k.MaKH" method="post" class="d-inline" onsubmit="return confirm('Xóa khách @k.HoTen?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

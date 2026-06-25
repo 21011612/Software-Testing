@@ -1,0 +1,112 @@
+@model ThanhToan
+@{
+    ViewData["Title"] = $"Thanh toán #{Model.MaTT}";
+    var hd = Model.HoaDon;
+    var payIcons = new Dictionary<string, string> {
+        ["Tiền mặt"] = "bi-cash-stack",
+        ["Thẻ"] = "bi-credit-card",
+        ["Chuyển khoản"] = "bi-bank",
+        ["Momo"] = "bi-phone",
+        ["ZaloPay"] = "bi-wallet2",
+        ["ShopeePay"] = "bi-bag-check",
+        ["Khác"] = "bi-three-dots"
+    };
+    var icon = payIcons.GetValueOrDefault(Model.PhuongThuc, "bi-wallet2");
+}
+
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Thanh toán #@Model.MaTT</h1>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i> Danh sách</a>
+        <a asp-controller="QuanTriHoaDon" asp-action="ChiTiet" asp-route-id="@Model.MaHD" class="btn btn-admin-primary btn-sm">
+            <i class="bi bi-receipt me-1"></i> Mở POS #@Model.MaHD
+        </a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="admin-form-card">
+            <h2 class="h6 mb-3"><i class="bi bi-credit-card me-1"></i> Thông tin giao dịch</h2>
+            <dl class="row mb-0 small">
+                <dt class="col-5 text-muted">Mã thanh toán</dt>
+                <dd class="col-7 fw-semibold">#@Model.MaTT</dd>
+                <dt class="col-5 text-muted">Thời gian</dt>
+                <dd class="col-7">@Model.NgayThanhToan.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+                <dt class="col-5 text-muted">Phương thức</dt>
+                <dd class="col-7"><i class="bi @icon me-1"></i>@Model.PhuongThuc</dd>
+                <dt class="col-5 text-muted">Số tiền</dt>
+                <dd class="col-7 price-tag fs-5 mb-2">@Model.SoTien.ToString("N0") đ</dd>
+                <dt class="col-5 text-muted">Mã giao dịch</dt>
+                <dd class="col-7">@(Model.MaGiaoDich ?? "—")</dd>
+                <dt class="col-5 text-muted">Trạng thái</dt>
+                <dd class="col-7"><span class="badge bg-success">@Model.TrangThai</span></dd>
+            </dl>
+        </div>
+        @if (hd != null)
+        {
+            <div class="admin-form-card mt-3">
+                <h2 class="h6 mb-3"><i class="bi bi-receipt-cutoff me-1"></i> Hóa đơn #@hd.MaHD</h2>
+                <dl class="row mb-0 small">
+                    <dt class="col-5 text-muted">Ngày lập</dt>
+                    <dd class="col-7">@hd.NgayLap.ToString("dd/MM/yyyy HH:mm")</dd>
+                    <dt class="col-5 text-muted">Loại đơn</dt>
+                    <dd class="col-7">@hd.LoaiDon</dd>
+                    <dt class="col-5 text-muted">Trạng thái HĐ</dt>
+                    <dd class="col-7">@hd.TrangThai</dd>
+                    <dt class="col-5 text-muted">Bàn</dt>
+                    <dd class="col-7">@(hd.Ban?.TenBan ?? "—")</dd>
+                    <dt class="col-5 text-muted">Khách</dt>
+                    <dd class="col-7">@(hd.KhachHang?.HoTen ?? hd.TenKhach ?? "—")</dd>
+                    <dt class="col-5 text-muted">SĐT</dt>
+                    <dd class="col-7">@(hd.KhachHang?.SDT ?? hd.SDT ?? "—")</dd>
+                    <dt class="col-5 text-muted">Nhân viên</dt>
+                    <dd class="col-7">@(hd.NhanVien?.HoTen ?? "—")</dd>
+                    <dt class="col-5 text-muted">Khuyến mãi</dt>
+                    <dd class="col-7">@(hd.KhuyenMai?.TenKM ?? "—")</dd>
+                    <dt class="col-5 text-muted">Tạm tính</dt>
+                    <dd class="col-7">@hd.TongTienTruocGiam.ToString("N0") đ</dd>
+                    <dt class="col-5 text-muted">Giảm giá</dt>
+                    <dd class="col-7 text-success">-@hd.GiamGia.ToString("N0") đ</dd>
+                    <dt class="col-5 text-muted fw-semibold">Tổng HĐ</dt>
+                    <dd class="col-7 fw-semibold">@hd.TongThanhToan.ToString("N0") đ</dd>
+                </dl>
+            </div>
+        }
+    </div>
+    <div class="col-lg-7">
+        @if (hd?.ChiTietHoaDons?.Any() == true)
+        {
+            <div class="admin-table-wrap">
+                <div class="p-3 border-bottom">
+                    <h2 class="h6 mb-0"><i class="bi bi-cup-straw me-1"></i> Chi tiết món</h2>
+                </div>
+                <table class="table admin-table mb-0">
+                    <thead><tr><th>Món</th><th>SL</th><th>Đơn giá</th><th class="text-end">Thành tiền</th></tr></thead>
+                    <tbody>
+                        @foreach (var c in hd.ChiTietHoaDons.OrderBy(x => x.MaCT))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@ImageHelper.ToUrl(c.SanPham?.HinhAnh)" alt="" width="36" height="36" class="rounded object-fit-cover" />
+                                        <div>
+                                            <div class="fw-semibold">@(c.SanPham?.TenSP ?? "—")</div>
+                                            @if (!string.IsNullOrEmpty(c.GhiChu))
+                                            {
+                                                <div class="small text-muted">@c.GhiChu</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@c.SoLuong</td>
+                                <td>@c.DonGia.ToString("N0") đ</td>
+                                <td class="text-end">@c.ThanhTien.ToString("N0") đ</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

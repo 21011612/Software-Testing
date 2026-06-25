@@ -1,0 +1,25 @@
+@model IEnumerable<CongThuc>
+@{ ViewData["Title"] = "Công thức"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Công thức (SP ↔ NL)</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Thêm</a>
+</div>
+<div class="admin-table-wrap">
+    <table class="table admin-table mb-0">
+        <thead><tr><th>Sản phẩm</th><th>Nguyên liệu</th><th>SL cần</th><th class="text-end"></th></tr></thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.SanPham?.TenSP</td>
+                    <td>@c.NguyenLieu?.TenNL</td>
+                    <td>@c.SoLuongCan</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Sua" asp-route-id="@c.MaCongThuc" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                        <form asp-action="Xoa" asp-route-id="@c.MaCongThuc" method="post" class="d-inline" onsubmit="return confirm('Xóa công thức?');">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

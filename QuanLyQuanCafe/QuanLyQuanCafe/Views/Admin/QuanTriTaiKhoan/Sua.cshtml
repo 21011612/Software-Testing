@@ -1,0 +1,5 @@
+@model TaiKhoanAdminViewModel
+@{ ViewData["Title"] = "Sửa tài khoản"; }
+<div class="admin-page-toolbar"><h1 class="admin-page-title">Sửa tài khoản</h1><a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại</a></div>
+<div class="admin-form-card"><partial name="_TaiKhoanForm" model="Model" /></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

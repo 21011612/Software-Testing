@@ -1,0 +1,94 @@
+@{
+    ViewData["Title"] = "Giới thiệu";
+    ViewData["PageTitle"] = "Tooru Coffee";
+    ViewData["PageDesc"] = "Hương vị cà phê đặc sản tại Đà Nẵng — không gian ấm áp, phục vụ tận tâm";
+    ViewData["PageEyebrow"] = "Giới thiệu";
+}
+
+<partial name="_PageHeader" />
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="intro-side-img rounded-4 overflow-hidden shadow">
+            <img src="@ImageHelper.ToUrl("images/Ca_phe_latte_art.jpg")" alt="Tooru Coffee" class="w-100" style="object-fit:cover; min-height:320px;" />
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="panel">
+            <div class="panel-body p-4 p-lg-5">
+                <h2 class="h4 mb-3" style="font-family: var(--font-display); color: var(--coffee-dark);">Chào mừng đến Tooru Coffee</h2>
+                <p>
+                    Tooru Coffee là quán cà phê tại <strong>123 Nguyễn Tất Thành, Sơn Trà, Đà Nẵng</strong> —
+                    nơi hội tụ hương vị cà phê Việt, trà trái cây, sinh tố tươi và các món ăn nhẹ được pha chế
+                    bài bản, phục vụ trong không gian thoải mái từ tầng trệt, tầng 2 đến sân vườn.
+                </p>
+                <p>
+                    Chúng tôi mang đến trải nghiệm gọi món và thanh toán tiện lợi ngay trên website:
+                    xem thực đơn đầy đủ, đặt món mang về hoặc tại quán, tích lũy điểm thành viên
+                    (Thường · Bạc · Vàng · Kim Cương) và nhận ưu đãi khi ghé quán.
+                </p>
+
+                <div class="row g-3 my-4">
+                    <div class="col-sm-6">
+                        <div class="intro-info-box">
+                            <i class="bi bi-clock"></i>
+                            <div>
+                                <strong>Phục vụ</strong>
+                                <p class="small text-muted mb-0">Gọi món nhanh, ghi chú từng món theo ý khách</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="intro-info-box">
+                            <i class="bi bi-geo-alt"></i>
+                            <div>
+                                <strong>Địa điểm</strong>
+                                <p class="small text-muted mb-0">Sơn Trà, Đà Nẵng — có bàn VIP &amp; sân vườn</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="intro-info-box">
+                            <i class="bi bi-cup-hot"></i>
+                            <div>
+                                <strong>Thực đơn</strong>
+                                <p class="small text-muted mb-0">Cà phê, trà, sinh tố, đồ ăn &amp; món signature</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="intro-info-box">
+                            <i class="bi bi-award"></i>
+                            <div>
+                                <strong>Thành viên</strong>
+                                <p class="small text-muted mb-0">Tích điểm, hạng ưu đãi khi thanh toán</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <h3 class="h6 text-uppercase text-muted mb-3">Về dự án phần mềm</h3>
+                <p class="small text-muted mb-2">
+                    <strong>Tên dự án:</strong> Hệ thống bán hàng và quản lý vận hành quán cà phê Tooru Coffee
+                </p>
+                <p class="small text-muted mb-2">
+                    <strong>Đơn vị chủ trì:</strong> Trường Đại học Phenikaa
+                </p>
+                <p class="small text-muted mb-4">
+                    <strong>Đơn vị phối hợp:</strong> Quán Tooru Coffee — 123 Nguyễn Tất Thành, Sơn Trà, Đà Nẵng
+                </p>
+                <p class="mb-0">
+                    Phần mềm hỗ trợ quản lý bán hàng, đơn hàng, thanh toán, khách hàng thành viên,
+                    bàn và báo cáo doanh thu — giúp quán vận hành chuyên nghiệp, chính xác và sẵn sàng mở rộng.
+                </p>
+
+                <div class="mt-4 d-flex flex-wrap gap-2">
+                    <a asp-controller="ThucDon" asp-action="Index" class="btn btn-tooru"><i class="bi bi-journal-text me-1"></i> Xem thực đơn</a>
+                    <a asp-controller="TaiKhoan" asp-action="DangKy" class="btn btn-outline-tooru">Đăng ký thành viên</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

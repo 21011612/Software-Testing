@@ -1,0 +1,5 @@
+@model CongThucAdminViewModel
+@{ ViewData["Title"] = "Sửa công thức"; }
+<div class="admin-page-toolbar"><h1 class="admin-page-title">Sửa công thức</h1><a asp-action="Index" class="btn btn-outline-secondary btn-sm">Quay lại</a></div>
+<div class="admin-form-card"><partial name="_CongThucForm" model="Model" /></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

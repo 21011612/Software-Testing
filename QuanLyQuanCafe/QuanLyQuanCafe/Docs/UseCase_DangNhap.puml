@@ -1,0 +1,88 @@
+@startuml UseCase_DangNhap
+' ================================================
+' USE CASE DIAGRAM: ĐĂNG NHẬP
+' Hệ thống: Quản lý Quán Cà Phê (Tooru Coffee)
+' ================================================
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor<<primary>> AliceBlue
+    BorderColor<<primary>> SteelBlue
+    BackgroundColor<<secondary>> Honeydew
+    BorderColor<<secondary>> SeaGreen
+    ArrowColor DarkSlateGray
+}
+
+' ===================== ACTORS =====================
+actor "Khách hàng" as KH
+actor "Nhân viên" as NV
+actor "Quản trị viên" as QT
+
+' ===================== SYSTEM =====================
+rectangle "Hệ thống Quản lý Quán Cà Phê\n(Tooru Coffee)" {
+
+    usecase "Đăng nhập\n(Khách hàng)" as LoginKH <<primary>>
+    usecase "Đăng nhập\n(Quản trị / Nhân viên)" as LoginQT <<primary>>
+
+    usecase "Xác thực thông tin\nđăng nhập\n(Tên đăng nhập + Mật khẩu)" as Authenticate <<secondary>>
+
+    usecase "Đăng ký tài khoản\n(Khách hàng mới)" as RegisterKH <<secondary>>
+
+    usecase "Đăng xuất" as Logout <<secondary>>
+}
+
+' ===================== ASSOCIATIONS =====================
+KH --> LoginKH
+KH --> RegisterKH
+
+NV --> LoginQT
+QT --> LoginQT
+
+' ===================== INCLUDE / EXTEND =====================
+LoginKH ..> Authenticate : <<include>>
+LoginQT ..> Authenticate : <<include>>
+
+' Đăng xuất thường được gọi sau khi đã đăng nhập
+LoginKH ..> Logout : <<extend>>
+LoginQT ..> Logout : <<extend>>
+
+' ===================== NOTES =====================
+note right of LoginKH
+  **Cổng khách hàng**
+  - URL: /TaiKhoan/DangNhap
+  - Chỉ chấp nhận vai trò: "KhachHang"
+  - Sau đăng nhập → Chuyển đến Thực đơn
+  - Hỗ trợ ReturnUrl
+end note
+
+note right of LoginQT
+  **Cổng quản trị**
+  - URL: /QuanTri/DangNhap
+  - Chấp nhận vai trò: "Admin", "NhanVien"
+  - Sau đăng nhập → Chuyển đến Dashboard Quản trị
+  - Hỗ trợ ReturnUrl
+end note
+
+note bottom of Authenticate
+  **Quy trình xác thực (AuthService):**
+  1. Kiểm tra tên đăng nhập + mật khẩu không rỗng
+  2. Tìm TaiKhoan (TenDangNhap, TrangThai=true)
+  3. Verify mật khẩu (BCrypt)
+  4. Kiểm tra vai trò phù hợp với cổng đăng nhập
+  5. Cập nhật LanDangNhapCuoi
+  6. Tạo Claims (MaTK, Name, Role, HoTen, MaKH/MaNV)
+  7. SignIn Cookie (persistent 7 ngày)
+end note
+
+note left of RegisterKH
+  Sau khi đăng ký thành công
+  → Tự động đăng xuất
+  → Chuyển về form Đăng nhập
+  + thông báo "Vui lòng đăng nhập"
+end note
+
+' ===================== TITLE =====================
+title Use Case - Đăng Nhập (Hệ thống Quản lý Quán Cà Phê)
+
+@enduml

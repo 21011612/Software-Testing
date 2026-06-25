@@ -1,0 +1,66 @@
+@startuml UC02_Sequence_DangNhap
+' ============================================================
+' SEQUENCE DIAGRAM - UC02: Đăng nhập cổng khách hàng
+' ============================================================
+
+title UC02 - Đăng nhập cổng khách hàng (Sequence Diagram)
+
+actor "Thành viên\n(Khách hàng)" as User
+participant "Giao diện\nĐăng nhập" as UI
+participant "TaiKhoanController" as Controller
+participant "AuthService" as Auth
+database "CSDL\n(TaiKhoan)" as DB
+participant "PasswordHelper" as PwdHelper
+participant "Hệ thống\nXác thực (Cookie)" as AuthSystem
+
+User -> UI : 1. Truy cập trang Đăng nhập cổng khách hàng
+UI --> User : Hiển thị form đăng nhập\n(Tên đăng nhập/SĐT/Email + Mật khẩu)
+
+User -> UI : 2. Nhập thông tin\n+ 3. Nhấn "Đăng nhập"
+UI -> Controller : POST /TaiKhoan/DangNhap\n(DangNhapViewModel)
+
+Controller -> Auth : DangNhapKhachHangAsync(model)
+
+Auth -> DB : Tìm tài khoản\n(theo Tên đăng nhập / SĐT / Email)
+DB --> Auth : TaiKhoan (hoặc null)
+
+alt Tài khoản không tồn tại / bị khóa
+    Auth --> Controller : (false, "Tên đăng nhập hoặc mật khẩu không đúng")
+    Controller --> UI : Hiển thị lỗi
+    UI --> User : Thông báo lỗi
+else Tài khoản hợp lệ
+    Auth -> PwdHelper : Verify(Mật khẩu, MatKhauHash)
+    
+    alt Sai mật khẩu
+        Auth --> Controller : (false, "Tên đăng nhập hoặc mật khẩu không đúng")
+        Controller --> UI : Hiển thị lỗi
+        UI --> User : Thông báo lỗi
+    else Mật khẩu đúng
+        Auth -> Auth : Kiểm tra vai trò == "KhachHang"
+        
+        alt Không phải tài khoản khách hàng
+            Auth --> Controller : (false, "Tài khoản nhân viên/quản trị...")
+            Controller --> UI : Hiển thị thông báo hướng dẫn
+            UI --> User : Lỗi + hướng dẫn sang cổng quản trị
+        else Là tài khoản khách hàng
+            Auth -> DB : Cập nhật LanDangNhapCuoi
+            DB --> Auth : OK
+            
+            Auth -> AuthSystem : Tạo Claims + SignIn\n(Cấp session / Cookie)
+            AuthSystem --> Auth : Thành công
+            
+            Auth --> Controller : (true, null)
+            
+            Controller -> Controller : Kiểm tra ReturnUrl
+            alt Có ReturnUrl hợp lệ
+                Controller --> UI : Redirect(ReturnUrl)
+            else Không
+                Controller --> UI : Redirect đến Trang chủ khách hàng\n(Thực đơn / Home)
+            end
+            
+            UI --> User : 5. Xác thực thành công\n6. Chuyển hướng đến cổng khách hàng
+        end
+    end
+end
+
+@enduml

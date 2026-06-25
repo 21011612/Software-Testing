@@ -1,0 +1,24 @@
+@model IEnumerable<PhieuNhap>
+@{ ViewData["Title"] = "Phiếu nhập"; }
+<div class="admin-page-toolbar">
+    <h1 class="admin-page-title">Phiếu nhập kho</h1>
+    <a asp-action="Them" class="btn btn-admin-primary"><i class="bi bi-plus-lg me-1"></i> Tạo phiếu</a>
+</div>
+<div class="admin-table-wrap">
+    <table class="table admin-table mb-0">
+        <thead><tr><th>#</th><th>Ngày</th><th>NCC</th><th>NV</th><th>Tổng</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td><strong>#@p.MaPN</strong></td>
+                    <td>@p.NgayNhap.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@p.NhaCungCap?.TenNCC</td>
+                    <td>@p.NhanVien?.HoTen</td>
+                    <td class="price-tag">@p.TongTien.ToString("N0") đ</td>
+                    <td><a asp-action="ChiTiet" asp-route-id="@p.MaPN" class="btn btn-sm btn-outline-primary">Chi tiết</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

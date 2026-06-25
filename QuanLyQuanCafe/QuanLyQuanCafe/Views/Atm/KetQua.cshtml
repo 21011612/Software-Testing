@@ -1,0 +1,52 @@
+@model KetQuaAtmViewModel
+@{
+    ViewData["Title"] = Model.TieuDe;
+}
+<div class="container container-main py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 text-center">
+                    <h1 class="h4 fw-bold mb-3">@Model.TieuDe</h1>
+                    <p class="fs-5 mb-4">@Model.ThongBao</p>
+                    @if (Model.SoTienRut.HasValue)
+                    {
+                        <p class="text-muted">Số tiền rút: <strong class="text-success">@Model.SoTienRut.Value.ToString("N0") đ</strong></p>
+                    }
+                    @if (Model.SoDu.HasValue)
+                    {
+                        <p class="text-muted small">Số dư sau giao dịch: @Model.SoDu.Value.ToString("N0") đ</p>
+                    }
+                    @if (Model.BienLai != null)
+                    {
+                        <div class="border rounded p-3 text-start small bg-light mt-3">
+                            <div class="fw-bold mb-2"><i class="bi bi-receipt me-1"></i> Hóa đơn</div>
+                            <div>Thẻ: @Model.BienLai.SoThe</div>
+                            <div>Loại: @Model.BienLai.LoaiGiaoDich</div>
+                            @if (Model.BienLai.SoTienRut.HasValue)
+                            {
+                                <div>Số tiền: @Model.BienLai.SoTienRut.Value.ToString("N0") đ</div>
+                            }
+                            <div>Số dư: @Model.BienLai.SoDuSauGiaoDich.ToString("N0") đ</div>
+                            <div class="text-muted">@Model.BienLai.ThoiGian.ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    }
+                    <div class="mt-4 d-grid gap-2">
+                        @if (Model.HienNutTiepTuc)
+                        {
+                            <a asp-action="Menu" class="btn btn-primary">Tiếp tục giao dịch</a>
+                            <form asp-action="KetThuc" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-secondary w-100">In hóa đơn · Trả thẻ · Kết thúc</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" class="btn btn-primary">Bắt đầu phiên mới</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+@model IEnumerable<LichSuHoatDong>
+@{ ViewData["Title"] = "Lịch sử hoạt động"; }
+<div class="admin-page-toolbar"><h1 class="admin-page-title">Lịch sử hoạt động</h1></div>
+<div class="admin-form-card mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-3"><label class="form-label small">Loại</label><input name="loai" value="@ViewBag.Loai" class="form-control form-control-sm" placeholder="Tạo_HĐ, ThanhToan..." /></div>
+        <div class="col-md-3"><label class="form-label small">Nhân viên</label><select name="maNv" class="form-select form-select-sm" asp-items="ViewBag.NhanViens"><option value="">Tất cả</option></select></div>
+        <div class="col-md-2"><label class="form-label small">Từ</label><input name="tuNgay" type="date" value="@ViewBag.TuNgay" class="form-control form-control-sm" /></div>
+        <div class="col-md-2"><label class="form-label small">Đến</label><input name="denNgay" type="date" value="@ViewBag.DenNgay" class="form-control form-control-sm" /></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-admin-primary btn-sm w-100">Lọc</button></div>
+    </form>
+</div>
+<div class="admin-table-wrap">
+    <table class="table admin-table mb-0 table-sm">
+        <thead><tr><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>NV</th><th>Tham chiếu</th></tr></thead>
+        <tbody>
+            @foreach (var l in Model)
+            {
+                <tr>
+                    <td class="text-nowrap">@l.ThoiGian.ToString("dd/MM HH:mm")</td>
+                    <td><span class="badge bg-secondary">@l.LoaiHanhDong</span></td>
+                    <td>@(l.MoTa ?? "—")</td>
+                    <td>@(l.NhanVien?.HoTen ?? "—")</td>
+                    <td class="small text-muted">@l.BangThamChieu #@l.MaThamChieu</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

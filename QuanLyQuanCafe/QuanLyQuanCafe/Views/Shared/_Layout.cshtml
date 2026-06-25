@@ -1,0 +1,130 @@
+@inject CartService Cart
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tooru Coffee</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-tooru sticky-top">
+            <div class="container container-main">
+                <a class="navbar-brand navbar-brand-tooru" asp-controller="Home" asp-action="Index">
+                    <span class="brand-icon"><i class="bi bi-cup-hot-fill"></i></span>
+                    Tooru Coffee
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse align-items-lg-center" id="navMain">
+                    <ul class="navbar-nav navbar-nav-main align-items-lg-center me-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door me-1"></i>Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ThucDon" asp-action="Index"><i class="bi bi-journal-text me-1"></i>Thực đơn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="GioiThieu"><i class="bi bi-info-circle me-1"></i>Giới thiệu</a>
+                        </li>
+                        @if (User.IsInRole("KhachHang"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="DonHang" asp-action="LichSu"><i class="bi bi-receipt me-1"></i>Đơn của tôi</a>
+                            </li>
+                        }
+                        <li class="nav-item nav-search-item d-none d-lg-flex align-items-center">
+                            <form class="nav-search-form" method="get" asp-controller="ThucDon" asp-action="Index" role="search">
+                                <div class="nav-search-wrap">
+                                    <i class="bi bi-search"></i>
+                                    <input type="search" name="q" class="nav-search-input" placeholder="Tìm món..." aria-label="Tìm món" />
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav navbar-nav-actions align-items-lg-center gap-lg-1 ms-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link cart-nav-link" asp-controller="DonHang" asp-action="GioHang">
+                                <i class="bi bi-bag-heart"></i>
+                                Giỏ hàng
+                                @{ var soMon = Cart.SoMon(); }
+                                @if (soMon > 0)
+                                {
+                                    <span class="cart-badge">@soMon</span>
+                                }
+                            </a>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link nav-user-pill">
+                                    <i class="bi bi-person-circle me-1"></i>@User.FindFirst("HoTen")?.Value
+                                </span>
+                            </li>
+                            <li class="nav-item ms-lg-1">
+                                <a class="btn btn-sm btn-outline-light rounded-pill px-3" asp-controller="TaiKhoan" asp-action="DangXuat">Đăng xuất</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="TaiKhoan" asp-action="DangNhap">Đăng nhập</a>
+                            </li>
+                            <li class="nav-item ms-lg-1">
+                                <a class="btn btn-sm btn-tooru rounded-pill px-3" asp-controller="TaiKhoan" asp-action="DangKy">Đăng ký</a>
+                            </li>
+                        }
+                    </ul>
+                    <form class="nav-search-form nav-search-form--mobile d-lg-none w-100 order-last px-2 pt-2 pb-1" method="get" asp-controller="ThucDon" asp-action="Index" role="search">
+                        <div class="nav-search-wrap">
+                            <i class="bi bi-search"></i>
+                            <input type="search" name="q" class="nav-search-input" placeholder="Tìm món..." />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container container-main">
+            <partial name="_Alerts" />
+            <main role="main">@RenderBody()</main>
+        </div>
+    </div>
+
+    <footer class="footer-tooru">
+        <div class="container container-main">
+            <div class="row g-4 mb-4">
+                <div class="col-md-5 text-center text-md-start">
+                    <div class="footer-brand">Tooru Coffee</div>
+                    <p class="small mb-0 opacity-75">Hệ thống bán hàng & quản lý vận hành — Trường Đại học Phenikaa</p>
+                </div>
+                <div class="col-md-4 text-center text-md-start">
+                    <p class="small mb-1"><i class="bi bi-geo-alt me-1"></i>09 Phạm Văn Đồng, Vĩnh Thọ</p>
+                    <p class="small mb-0 opacity-75">Đà Nẵng</p>
+                </div>
+                <div class="col-md-3 text-center text-md-end">
+                    <a asp-controller="ThucDon" asp-action="Index" class="small d-block mb-1">Thực đơn</a>
+                    <a asp-controller="TaiKhoan" asp-action="DangKy" class="small d-block mb-1">Đăng ký thành viên</a>
+                    <a asp-controller="QuanTri" asp-action="DangNhap" class="small d-block opacity-75"><i class="bi bi-shield-lock"></i> Cổng quản trị</a>
+                </div>
+            </div>
+            <hr class="border-secondary opacity-25" />
+            <p class="text-center small mb-0 opacity-50">&copy; @DateTime.Now.Year Tooru Coffee. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <partial name="_Chatbot" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/chatbot.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,58 @@
+@model SanPham
+@using QuanLyQuanCafe.ViewModels
+@{
+    ViewData["Title"] = Model.TenSP;
+    var img = ImageHelper.ToUrl(Model.HinhAnh);
+    var tongHop = ViewBag.DanhGiaTongHop as SanPhamDanhGiaTongHop;
+    var diem = tongHop?.DiemTrungBinh ?? 0;
+    var soLuot = tongHop?.SoDanhGia ?? 0;
+}
+
+<div class="row g-4 align-items-start">
+    <div class="col-lg-5">
+        <img src="@img" alt="@Model.TenSP" class="product-detail-img" />
+    </div>
+    <div class="col-lg-7">
+        <div class="product-detail-panel">
+            <span class="badge badge-loai mb-2">@Model.LoaiSanPham?.TenLoai</span>
+            <h1 class="page-header-title mb-2">@Model.TenSP</h1>
+            <div class="mb-2">
+                <partial name="_StarRating" model="@(new StarRatingViewModel { Diem = diem, SoLuot = soLuot })" />
+                @if (soLuot > 0)
+                {
+                    <a href="#danh-gia" class="small ms-1">Xem @soLuot bình luận</a>
+                }
+            </div>
+            <p class="price-tag fs-3 mb-3">@Model.Gia.ToString("N0") đ <span class="fs-6 fw-normal text-muted">/ @Model.DonViTinh · @Model.KichCo</span></p>
+            <p class="text-muted mb-4">@Model.MoTa</p>
+            <form asp-action="ThemGioHang" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="maSp" value="@Model.MaSP" />
+                <input type="hidden" name="tenSp" value="@Model.TenSP" />
+                <input type="hidden" name="hinhAnh" value="@Model.HinhAnh" />
+                <input type="hidden" name="donGia" value="@Model.Gia" />
+                <div class="col-sm-4">
+                    <label class="form-label fw-semibold">Số lượng</label>
+                    <input type="number" name="soLuong" value="1" min="1" max="20" class="form-control form-control-lg" />
+                </div>
+                <div class="col-sm-8">
+                    <label class="form-label fw-semibold">Ghi chú</label>
+                    <input type="text" name="ghiChu" class="form-control form-control-lg" placeholder="Ít đá, ít ngọt, thêm đường..." />
+                </div>
+                <div class="col-12 d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-tooru btn-lg px-4">
+                        <i class="bi bi-bag-plus me-1"></i> Thêm vào giỏ
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-tooru btn-lg">Quay lại thực đơn</a>
+                    <a href="#danh-gia" class="btn btn-outline-tooru btn-lg"><i class="bi bi-star me-1"></i> Đánh giá</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_DanhGiaSection" model="Model" />
+
+@section Scripts {
+    <script src="~/js/rating-input.js" asp-append-version="true"></script>
+}
